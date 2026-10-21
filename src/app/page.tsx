@@ -1,19 +1,14 @@
-import Link from "next/link";
+import { Hero } from "@/components/landing/Hero";
+import { Navbar } from "@/components/landing/Navbar";
 
-// Placeholder landing until the Phase 2 check-in flow exists.
+// Landing page. The check-in flow (Phase 2) will replace the "coming soon" text.
 export default function Home() {
   return (
-    <main className="mx-auto flex w-full max-w-lg flex-1 flex-col justify-center gap-6 px-4 py-16">
-      <h1 className="text-3xl font-semibold">Aatman</h1>
-      <p className="text-muted">
-        A quiet space for NIT Patna students to check in with themselves. The check-in is coming soon.
-      </p>
-      <Link
-        href="/crisis"
-        className="flex min-h-14 items-center justify-center rounded-2xl bg-accent px-5 font-semibold text-accent-foreground"
-      >
-        Need to talk to someone now?
-      </Link>
-    </main>
+    <div className="grain flex flex-1 flex-col bg-ink text-white">
+      <Navbar />
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-5 pb-16 md:px-10">
+        <Hero />
+      </main>
+    </div>
   );
 }
