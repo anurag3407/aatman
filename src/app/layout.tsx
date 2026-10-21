@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Noto_Sans_Devanagari } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Sans_Devanagari, Unbounded } from "next/font/google";
 import { ServiceWorkerRegister } from "./ServiceWorkerRegister";
 import "./globals.css";
 
@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 const notoDevanagari = Noto_Sans_Devanagari({
   variable: "--font-devanagari",
   subsets: ["devanagari"],
+});
+
+const unbounded = Unbounded({
+  variable: "--font-unbounded",
+  subsets: ["latin"],
 });
 
 // Deliberately neutral: the tab title and lock-screen name must not reveal what the app is for.
@@ -35,7 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${notoDevanagari.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${notoDevanagari.variable} ${unbounded.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
         {children}
