@@ -16,7 +16,7 @@ export default async function SettingsPage() {
         <a
           href="/api/me/export"
           download
-          className="inline-flex min-h-12 items-center justify-center rounded-xl border border-border px-5 font-medium hover:bg-accent-soft"
+          className="inline-flex min-h-12 items-center justify-center rounded-md border border-border px-5 font-medium hover:bg-accent-soft"
         >
           {m.settings.exportCta}
         </a>

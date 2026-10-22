@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Banner, Button, Card, LinkButton, Page, PageTitle, inputClass } from "@/components/ui";
+import { Banner, Button, Card, LinkButton, Page, PageTitle, inputClass, mutedLinkClass } from "@/components/ui";
 import { landingPathFor } from "@/lib/auth/login";
 import { getSession } from "@/lib/auth/session";
 import { devLoginEnabled, googleConfigured, microsoftConfigured } from "@/lib/env";
@@ -16,7 +16,7 @@ export default async function SignInPage({ searchParams }: PageProps<"/signin">)
   const dev = devLoginEnabled();
 
   return (
-    <Page>
+    <Page width="narrow" className="justify-center">
       <PageTitle sub={m.signin.body}>{m.signin.title}</PageTitle>
       {errorKey && <Banner tone="urgent">{m.signin.errors[errorKey]}</Banner>}
 
@@ -48,7 +48,7 @@ export default async function SignInPage({ searchParams }: PageProps<"/signin">)
         </Card>
       )}
 
-      <Link href="/checkin?mode=stateless" className="text-center text-sm text-muted underline underline-offset-4">
+      <Link href="/checkin?mode=stateless" className={`text-center text-sm ${mutedLinkClass}`}>
         {m.signin.minor}
       </Link>
     </Page>

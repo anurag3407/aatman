@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CheckinDetail } from "@/components/staff/CheckinDetail";
+import { linkClass, mutedLinkClass } from "@/components/ui";
 import { requireStaffPage } from "@/lib/auth/guards";
 import { formatDate } from "@/lib/i18n";
 import { getBookingForStaff } from "@/lib/services/booking";
@@ -15,10 +16,10 @@ export default async function BookingDetailPage({ params }: PageProps<"/counsell
 
   return (
     <>
-      <Link href="/counsellor" className="text-sm text-muted underline">
+      <Link href="/counsellor" className={`inline-flex items-center gap-1 text-sm ${mutedLinkClass}`}>
         ← Back
       </Link>
-      <h1 className="text-xl font-semibold">Booked session</h1>
+      <h1 className="font-display text-2xl font-black leading-tight tracking-tight sm:text-3xl">Booked session</h1>
       <p>
         {formatDate(booking.slot.startsAt, "en", { dateStyle: "full", timeStyle: "short" })} IST · {booking.slot.location} ·{" "}
         {booking.slot.mode.replace("_", " ")}
@@ -26,12 +27,12 @@ export default async function BookingDetailPage({ params }: PageProps<"/counsell
       {booking.phone && (
         <p>
           Phone (for rescheduling):{" "}
-          <a className="font-semibold text-accent underline" href={`tel:${booking.phone.replace(/[^\d+]/g, "")}`}>
+          <a className={`font-semibold ${linkClass}`} href={`tel:${booking.phone.replace(/[^\d+]/g, "")}`}>
             {booking.phone}
           </a>
         </p>
       )}
-      <section className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-4">
+      <section className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-4 sm:p-5">
         <h2 className="font-semibold">Shared check-in</h2>
         {booking.checkin ? (
           <CheckinDetail checkin={booking.checkin} />

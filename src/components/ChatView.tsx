@@ -5,7 +5,7 @@ import { useI18n } from "@/lib/i18n/client";
 import { ANTI_RAGGING } from "@/lib/safety/helplines";
 import { detectCrisis } from "@/lib/safety/crisisDetector";
 import { CrisisActions } from "./CrisisActions";
-import { Banner, Button, Card } from "./ui";
+import { Banner, Button, Card, linkClass } from "./ui";
 
 interface Turn {
   role: "user" | "assistant";
@@ -73,7 +73,7 @@ export function ChatView() {
         {turns.map((t, i) => (
           <li
             key={i}
-            className={`max-w-[85%] rounded-2xl px-4 py-3 ${
+            className={`max-w-[85%] break-words whitespace-pre-wrap rounded-2xl px-4 py-3 sm:max-w-[75%] ${
               t.role === "user" ? "self-end rounded-br-sm bg-accent text-accent-foreground" : "self-start rounded-bl-sm border border-border bg-surface"
             }`}
           >
@@ -97,7 +97,7 @@ export function ChatView() {
         <Card>
           <h2 className="font-semibold">{m.chat.pausedTitle}</h2>
           <p className="text-muted">{m.chat.raggingBody}</p>
-          <a href={`tel:${ANTI_RAGGING.tel}`} className="font-semibold text-accent underline underline-offset-4">
+          <a href={`tel:${ANTI_RAGGING.tel}`} className={`font-semibold ${linkClass}`}>
             {ANTI_RAGGING.name[locale]} · {ANTI_RAGGING.number}
           </a>
         </Card>

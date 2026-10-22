@@ -9,7 +9,7 @@ import { tierRank } from "@/lib/safety/triage";
 import type { PublicTriage } from "@/lib/services/checkins";
 import { ContactForm } from "@/components/ContactForm";
 import { CrisisActions } from "@/components/CrisisActions";
-import { Banner, Card, LinkButton } from "@/components/ui";
+import { Banner, Card, LinkButton, linkClass } from "@/components/ui";
 
 interface Summary {
   text: string;
@@ -62,7 +62,7 @@ export function ResultsView({
         <p className="text-sm text-muted">
           {m.results.title} · {date}
         </p>
-        <h1 className="text-2xl font-semibold leading-snug">{m.results.heading[tier]}</h1>
+        <h1 className="font-display text-2xl font-black leading-tight tracking-tight sm:text-3xl">{m.results.heading[tier]}</h1>
       </header>
 
       {mode === "offline" && <Banner>{m.results.notSaved}</Banner>}
@@ -71,75 +71,80 @@ export function ResultsView({
       {(tier === "crisis" || tier === "urgent") && <CrisisActions m={m} tone={tier} />}
       {tier === "elevated" && <Banner tone="urgent">{m.checkin.inlineSupport}</Banner>}
 
-      <Card aria-live="polite">
-        <h2 className="font-semibold">{m.results.summaryTitle}</h2>
-        {summary ? (
-          <>
-            <p className="leading-relaxed">{summary.text}</p>
-            {summary.source === "llm" && <p className="text-xs text-muted">{m.results.aiNote}</p>}
-          </>
-        ) : (
-          <p className="text-muted">{m.results.summaryLoading}</p>
-        )}
-      </Card>
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1.6fr)_minmax(18rem,1fr)] lg:items-start">
+        <div className="flex min-w-0 flex-col gap-5">
+          <Card aria-live="polite" className="min-w-0">
+            <h2 className="font-semibold">{m.results.summaryTitle}</h2>
+            {summary ? (
+              <>
+                <p className="leading-relaxed">{summary.text}</p>
+                {summary.source === "llm" && <p className="text-xs text-muted">{m.results.aiNote}</p>}
+              </>
+            ) : (
+              <p className="text-muted">{m.results.summaryLoading}</p>
+            )}
+          </Card>
 
-      {showRagging && (
-        <Card>
-          <h2 className="font-semibold">{m.results.ragging.title}</h2>
-          <p className="text-sm text-muted">{m.results.ragging.body}</p>
-          <a href={`tel:${ANTI_RAGGING.tel}`} className="font-semibold text-accent underline underline-offset-4">
-            {ANTI_RAGGING.name[locale]} · {ANTI_RAGGING.number}
-          </a>
-        </Card>
-      )}
+          {showRagging && (
+            <Card>
+              <h2 className="font-semibold">{m.results.ragging.title}</h2>
+              <p className="text-sm text-muted">{m.results.ragging.body}</p>
+              <a href={`tel:${ANTI_RAGGING.tel}`} className={`font-semibold ${linkClass}`}>
+                {ANTI_RAGGING.name[locale]} · {ANTI_RAGGING.number}
+              </a>
+            </Card>
+          )}
 
-      <h2 className="text-lg font-semibold">{m.results.nextTitle}</h2>
+          <h2 className="text-lg font-semibold">{m.results.nextTitle}</h2>
 
-      {atLeast("moderate") &&
-        (saved ? (
-          <>
-            {atLeast("elevated") && <ContactForm checkinId={checkinId} />}
-            <ActionCard title={m.results.book.title} body={m.results.book.body} href="/book" cta={m.results.book.cta} primary={!atLeast("elevated")} />
-            {tier === "moderate" && <ContactForm checkinId={checkinId} defaultOpen={false} />}
-          </>
-        ) : (
-          <Banner>{m.results.contact.stateless}</Banner>
-        ))}
+          {atLeast("moderate") &&
+            (saved ? (
+              <>
+                {atLeast("elevated") && <ContactForm checkinId={checkinId} />}
+                <ActionCard title={m.results.book.title} body={m.results.book.body} href="/book" cta={m.results.book.cta} primary={!atLeast("elevated")} />
+                {tier === "moderate" && <ContactForm checkinId={checkinId} defaultOpen={false} />}
+              </>
+            ) : (
+              <Banner>{m.results.contact.stateless}</Banner>
+            ))}
 
-      {tier !== "crisis" && <Tips m={m} campus={campus} />}
+          {tier !== "crisis" && <Tips m={m} campus={campus} />}
 
-      <ActionCard
-        title={m.results.exercises.title}
-        body={m.results.exercises.body}
-        href="/exercises"
-        cta={m.results.exercises.cta}
-        primary={tier === "mild"}
-      />
-      {saved && !atLeast("elevated") && (
-        <ActionCard title={m.results.chat.title} body={m.results.chat.body} href="/chat" cta={m.results.chat.cta} />
-      )}
+          <ActionCard
+            title={m.results.exercises.title}
+            body={m.results.exercises.body}
+            href="/exercises"
+            cta={m.results.exercises.cta}
+            primary={tier === "mild"}
+          />
+          {saved && !atLeast("elevated") && (
+            <ActionCard title={m.results.chat.title} body={m.results.chat.body} href="/chat" cta={m.results.chat.cta} />
+          )}
 
-      {tier !== "crisis" && (
-        <Card>
-          <h2 className="font-semibold">{m.results.recheck.title}</h2>
-          <p className="text-sm text-muted">{m.results.recheck.body}</p>
-          <a href="/api/reminder?days=14" className="text-sm font-medium text-accent underline underline-offset-4" download>
-            {m.results.recheck.ics}
-          </a>
-        </Card>
-      )}
+          {tier !== "crisis" && (
+            <Card>
+              <h2 className="font-semibold">{m.results.recheck.title}</h2>
+              <p className="text-sm text-muted">{m.results.recheck.body}</p>
+              <a href="/api/reminder?days=14" className={`text-sm ${linkClass}`} download>
+                {m.results.recheck.ics}
+              </a>
+            </Card>
+          )}
+        </div>
 
-      <ScoreDetails m={m} triage={triage} />
-
-      <div className="flex flex-col gap-2">
-        <LinkButton href={saved ? "/checkin" : "/checkin?mode=stateless"} variant="secondary">
-          {m.results.newCheckin}
-        </LinkButton>
-        {saved && (
-          <LinkButton href="/history" variant="ghost">
-            {m.results.viewHistory}
-          </LinkButton>
-        )}
+        <aside className="flex min-w-0 flex-col gap-5">
+          <ScoreDetails m={m} triage={triage} />
+          <div className="flex flex-col gap-2">
+            <LinkButton href={saved ? "/checkin" : "/checkin?mode=stateless"} variant="secondary">
+              {m.results.newCheckin}
+            </LinkButton>
+            {saved && (
+              <LinkButton href="/history" variant="ghost">
+                {m.results.viewHistory}
+              </LinkButton>
+            )}
+          </div>
+        </aside>
       </div>
     </div>
   );

@@ -1,6 +1,17 @@
 import { expect, test } from "@playwright/test";
 import { answerTier1, finishCampusAndSubmit, staffSignIn, studentSignIn } from "./helpers";
 
+test("landing: shows the headline, check-in CTA, breathing link and crisis link", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("WE GET YOU");
+  await expect(page.getByRole("link", { name: "Start a check-in" })).toHaveAttribute("href", "/checkin");
+  await expect(page.getByRole("link", { name: "Try a one-minute breathing exercise" })).toHaveAttribute(
+    "href",
+    "/exercises/breathing",
+  );
+  await expect(page.getByRole("link", { name: "Need help now" })).toHaveAttribute("href", "/crisis");
+});
+
 test("booking: counsellor creates slots, student books and shares, counsellor sees the shared check-in", async ({ page, browser }) => {
   const staff = await browser.newPage();
   await staffSignIn(staff, "counsellor@nitp.ac.in");
@@ -57,7 +68,7 @@ test("reflective chat: replies, blocks unsafe model output, and pauses on crisis
 test("Hindi: the language switch translates the app and the check-in", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Language" }).click();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("खुद से हाल-चाल पूछने की एक शांत जगह");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("आप अकेले नहीं");
   await expect(page.locator("div[lang=hi]").first()).toBeVisible();
   await page.goto("/checkin?mode=stateless");
   await expect(page.getByRole("button", { name: "बिल्कुल नहीं" })).toBeVisible();

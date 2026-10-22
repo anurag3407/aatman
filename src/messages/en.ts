@@ -56,6 +56,28 @@ const en = {
     ],
   },
 
+  landing: {
+    brand: "Aatman.",
+    nav: {
+      checkin: "Check-in",
+      exercises: "Exercises",
+      book: "Book a counsellor",
+    },
+    headline1: "WE GET YOU",
+    headline2: "WE GOT YOU",
+    headlineAria: "We get you. We got you.",
+    label: "Mental health.",
+    body: "Good days or bad, we all have them. Shame, stigma and long waits often stop students from asking for help. Aatman makes a private check-in the first step — and connects you to your campus counsellor when you need one.",
+    bodyMobile: "Good days or bad, we all have them. A private check-in is the first step.",
+    trust:
+      "A free, confidential session with your campus counsellor is one step away. Your check-in stays private unless you choose to share it.",
+    privacy: "No name. No roll number. Nothing shared unless you choose.",
+    cta: "Start a check-in",
+    crisis: "Need help now",
+    badge: "breathe in · breathe out ·",
+    breathing: "Try a one-minute breathing exercise",
+  },
+
   consent: {
     title: "Before you start",
     updated: "We've updated how Aatman works. Please read and agree again.",

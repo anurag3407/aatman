@@ -17,7 +17,7 @@ export default async function CheckinPage({ searchParams }: PageProps<"/checkin"
   }
 
   return (
-    <Page>
+    <Page width="narrow">
       <CheckinFlow stateless={stateless} />
     </Page>
   );

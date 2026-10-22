@@ -54,7 +54,7 @@ export function ContactForm({ checkinId, defaultOpen = true }: { checkinId?: str
           {t.title}
         </Button>
       ) : (
-        <form onSubmit={onSubmit} className="flex flex-col gap-3" noValidate>
+        <form onSubmit={onSubmit} className="grid gap-3 sm:grid-cols-2" noValidate>
           <label className="flex flex-col gap-1 text-sm">
             {t.name}
             <input name="name" maxLength={60} autoComplete="off" className={inputClass} />
@@ -71,12 +71,16 @@ export function ContactForm({ checkinId, defaultOpen = true }: { checkinId?: str
             {t.bestTime}
             <input name="bestTime" maxLength={80} className={inputClass} />
           </label>
-          <label className="flex items-start gap-3 text-sm">
+          <label className="flex items-start gap-3 text-sm sm:col-span-2">
             <input name="consent" type="checkbox" className="mt-1 size-5 accent-[var(--accent)]" />
             <span>{t.consent}</span>
           </label>
-          {error && <Banner tone="urgent">{error}</Banner>}
-          <Button type="submit" disabled={status === "sending"}>
+          {error && (
+            <div className="sm:col-span-2">
+              <Banner tone="urgent">{error}</Banner>
+            </div>
+          )}
+          <Button type="submit" disabled={status === "sending"} className="sm:col-span-2">
             {t.submit}
           </Button>
         </form>

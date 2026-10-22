@@ -19,7 +19,7 @@ export default async function ConsentPage() {
   }
 
   return (
-    <Page>
+    <Page width="narrow">
       <PageTitle sub={m.consent.intro}>{m.consent.title}</PageTitle>
       {previouslyConsented && <Banner>{m.consent.updated}</Banner>}
       <Card>

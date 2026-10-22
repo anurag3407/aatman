@@ -29,7 +29,7 @@ export function KeepToggle({ id, initial }: { id: string; initial: boolean }) {
       aria-pressed={keep}
       disabled={busy}
       onClick={toggle}
-      className={`rounded-lg px-3 py-2 text-sm ${keep ? "bg-accent-soft font-medium" : "text-muted hover:bg-accent-soft"}`}
+      className={`rounded-md px-3 py-2 text-sm ${keep ? "bg-accent-soft font-medium" : "text-muted hover:bg-accent-soft"}`}
     >
       {keep ? `✓ ${m.history.kept}` : m.history.keep}
     </button>

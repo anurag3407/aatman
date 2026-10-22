@@ -34,7 +34,7 @@ export function QuickExit({ label, hint }: { label: string; hint: string }) {
       onClick={quickExit}
       aria-label={hint}
       title={hint}
-      className="min-h-10 rounded-lg border border-border bg-surface px-3 text-sm font-medium focus-visible:outline-2 focus-visible:outline-accent"
+      className="min-h-10 rounded-md border border-border bg-surface px-3 text-sm font-medium focus-visible:outline-2 focus-visible:outline-accent"
     >
       {label}
     </button>

@@ -22,14 +22,14 @@ export default async function BookPage() {
   });
 
   return (
-    <Page>
+    <Page width="wide">
       <PageTitle sub={m.book.body}>{m.book.title}</PageTitle>
       <BookingView open={open.map(serialize)} mine={mine.map(serialize)} hasCheckin={latest !== null} />
       {latest && (
-        <>
+        <div className="flex max-w-2xl flex-col gap-3">
           <h2 className="font-semibold">{m.book.contactInstead}</h2>
           <ContactForm checkinId={latest.id} defaultOpen={false} />
-        </>
+        </div>
       )}
     </Page>
   );

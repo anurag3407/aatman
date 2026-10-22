@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Noto_Sans_Devanagari } from "next/font/google";
+import { Archivo_Black, Geist, Geist_Mono, Noto_Sans_Devanagari } from "next/font/google";
 import { ServiceWorkerRegister } from "./ServiceWorkerRegister";
 import "./globals.css";
 
@@ -18,6 +18,12 @@ const notoDevanagari = Noto_Sans_Devanagari({
   subsets: ["devanagari"],
 });
 
+const archivoBlack = Archivo_Black({
+  variable: "--font-archivo-black",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 // Deliberately neutral: the tab title and lock-screen name must not reveal what the app is for.
 export const metadata: Metadata = {
   title: "Aatman",
@@ -25,19 +31,17 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f7f5f0" },
-    { media: "(prefers-color-scheme: dark)", color: "#171a17" },
-  ],
+  colorScheme: "dark",
+  themeColor: "#1a1a1a",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${notoDevanagari.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${notoDevanagari.variable} ${archivoBlack.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans">
+      <body className="flex min-h-full flex-col bg-background font-sans text-foreground">
         {children}
         <ServiceWorkerRegister />
       </body>

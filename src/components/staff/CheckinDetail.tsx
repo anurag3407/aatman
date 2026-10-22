@@ -15,7 +15,7 @@ export function CheckinDetail({ checkin }: { checkin: CheckinRecord }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
-        <span className={`rounded-full px-3 py-1 text-sm font-semibold ${TIER_BADGE[triage.tier]}`}>{TIER_LABELS[triage.tier]}</span>
+        <span className={`rounded-md px-3 py-1 text-sm font-semibold ${TIER_BADGE[triage.tier]}`}>{TIER_LABELS[triage.tier]}</span>
         <span className="text-sm text-muted">{formatDate(checkin.createdAt, "en", { dateStyle: "medium", timeStyle: "short" })} IST</span>
       </div>
 

@@ -13,7 +13,7 @@ export default async function AdminDashboard() {
   return (
     <>
       <header className="flex flex-col gap-1">
-        <h1 className="text-xl font-semibold">Wellbeing overview</h1>
+        <h1 className="font-display text-2xl font-black leading-tight tracking-tight sm:text-3xl">Wellbeing overview</h1>
         <p className="text-sm text-muted">
           Totals only. Any count below {K_MIN} is hidden (and one more cell, so it can&apos;t be worked out from the total).
         </p>
@@ -31,8 +31,8 @@ export default async function AdminDashboard() {
 
       <section className="flex flex-col gap-2">
         <h2 className="font-semibold">Check-ins by week</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[560px] text-left text-sm">
+        <div className="overflow-x-auto rounded-xl border border-border">
+          <table className="w-full min-w-[640px] text-left text-sm">
             <thead className="text-muted">
               <tr>
                 <th className="py-2">Week of</th>

@@ -13,8 +13,16 @@ const VARIANTS: Record<Variant, string> = {
 };
 
 const BASE =
-  "inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-5 py-3 text-base font-medium transition " +
+  "inline-flex min-h-12 items-center justify-center gap-2 rounded-md px-5 py-3 text-base font-medium transition " +
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50";
+
+/** Inline links: no permanent underline; colour carries the affordance, with underline on hover. */
+export const linkClass =
+  "text-accent underline-offset-4 transition hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+
+/** Secondary/back links: quieter by default, clearer on hover. */
+export const mutedLinkClass =
+  "text-muted underline-offset-4 transition hover:text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 export function Button({ variant = "primary", className = "", ...props }: ComponentProps<"button"> & { variant?: Variant }) {
   return <button className={`${BASE} ${VARIANTS[variant]} ${className}`} {...props} />;
@@ -30,7 +38,7 @@ export function LinkButton({
 
 export function Card({ className = "", children, ...props }: ComponentProps<"section">) {
   return (
-    <section className={`flex flex-col gap-3 rounded-2xl border border-border bg-surface p-5 ${className}`} {...props}>
+    <section className={`flex flex-col gap-3 rounded-2xl border border-border bg-surface p-5 sm:p-6 ${className}`} {...props}>
       {children}
     </section>
   );
@@ -51,14 +59,36 @@ export function Banner({ tone = "info", children, className = "" }: { tone?: "in
 export function PageTitle({ children, sub }: { children: ReactNode; sub?: ReactNode }) {
   return (
     <header className="flex flex-col gap-2">
-      <h1 className="text-2xl font-semibold leading-snug">{children}</h1>
-      {sub && <p className="text-muted">{sub}</p>}
+      <h1 className="font-display text-2xl font-black leading-tight tracking-tight sm:text-3xl">{children}</h1>
+      {sub && <p className="max-w-2xl text-muted">{sub}</p>}
     </header>
   );
 }
 
-export function Page({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <main className={`mx-auto flex w-full max-w-lg flex-1 flex-col gap-6 px-4 py-6 ${className}`}>{children}</main>;
+type PageWidth = "narrow" | "default" | "wide";
+
+const PAGE_WIDTHS: Record<PageWidth, string> = {
+  narrow: "max-w-xl",
+  default: "max-w-3xl",
+  wide: "max-w-[75rem]",
+};
+
+export function Page({
+  children,
+  className = "",
+  width = "default",
+}: {
+  children: ReactNode;
+  className?: string;
+  width?: PageWidth;
+}) {
+  return (
+    <main
+      className={`mx-auto flex w-full ${PAGE_WIDTHS[width]} flex-1 flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8 ${className}`}
+    >
+      {children}
+    </main>
+  );
 }
 
 export const inputClass =

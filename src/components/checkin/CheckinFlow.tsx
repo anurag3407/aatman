@@ -19,7 +19,7 @@ import { fmt } from "@/lib/i18n";
 import { useI18n } from "@/lib/i18n/client";
 import { PHQ9_SAFETY_ITEM_INDEX } from "@/lib/scales";
 import { triage } from "@/lib/safety/triage";
-import { Banner, Button } from "@/components/ui";
+import { Banner, Button, mutedLinkClass } from "@/components/ui";
 
 function loadDraft(): FlowState {
   try {
@@ -151,7 +151,7 @@ export function CheckinFlow({ stateless }: { stateless: boolean }) {
 
       <p className="text-xs text-muted">{m.checkin.draftNote}</p>
       {state.order.length > 0 && (
-        <button type="button" className="self-start text-xs text-muted underline" onClick={() => setState(EMPTY_FLOW)}>
+        <button type="button" className={`self-start text-xs ${mutedLinkClass}`} onClick={() => setState(EMPTY_FLOW)}>
           {m.checkin.restart}
         </button>
       )}
@@ -172,7 +172,7 @@ function StepView({
   const [text, setText] = useState("");
 
   const heading = (content: React.ReactNode) => (
-    <h2 ref={headingRef} tabIndex={-1} className="text-xl font-semibold leading-snug outline-none">
+    <h2 ref={headingRef} tabIndex={-1} className="text-xl font-semibold leading-snug outline-none sm:text-2xl">
       {content}
     </h2>
   );
@@ -188,7 +188,7 @@ function StepView({
   );
 
   const bubble = (children: React.ReactNode) => (
-    <div className="flex flex-col gap-4 rounded-2xl rounded-tl-sm border border-border bg-surface p-5">
+    <div className="flex flex-col gap-4 rounded-2xl rounded-tl-sm border border-border bg-surface p-5 sm:p-6">
       <span className="text-xs font-medium text-accent">{m.common.appName}</span>
       {children}
     </div>

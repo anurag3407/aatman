@@ -61,97 +61,101 @@ export function BookingView({ open, mine, hasCheckin }: { open: Slot[]; mine: Sl
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
       {message && <Banner tone={message.tone}>{message.text}</Banner>}
 
-      {mine.length > 0 && (
-        <Card>
-          <h2 className="font-semibold">{m.book.yourBookings}</h2>
-          <ul className="flex flex-col gap-3">
-            {mine.map((s) => (
-              <li key={s.id} className="flex flex-col gap-2 border-t border-border pt-3 first:border-0 first:pt-0">
-                <span className="font-medium">{when(s.startsAt)}</span>
-                <span className="text-sm text-muted">
-                  {m.book.mode[s.mode]} · {s.location}
-                </span>
-                {s.status === "cancelled" ? (
-                  <span className="text-sm text-urgent">{m.book.cancelled}</span>
-                ) : (
-                  <Button variant="ghost" className="self-start" disabled={busy} onClick={() => cancel(s.id)}>
-                    {m.book.cancelBooking}
-                  </Button>
-                )}
-              </li>
-            ))}
-          </ul>
-        </Card>
-      )}
-
-      {open.length === 0 ? (
-        <Card>
-          <p>{m.book.none}</p>
-          {[TELE_MANAS, ICALL].map((h) => (
-            <a key={h.id} href={`tel:${h.tel}`} className="flex justify-between gap-4 rounded-xl border border-border px-4 py-3">
-              <span>
-                <span className="block font-medium">{h.name[locale]}</span>
-                <span className="text-sm text-muted">{h.hours[locale]}</span>
-              </span>
-              <span className="font-semibold text-accent">{h.number}</span>
-            </a>
-          ))}
-        </Card>
-      ) : selected ? (
-        <Card>
-          <h2 className="font-semibold">{m.book.confirmTitle}</h2>
-          <p>
-            {when(selected.startsAt)} · {m.book.mode[selected.mode]} · {selected.location}
-          </p>
-          <form onSubmit={confirm} className="flex flex-col gap-3">
-            {hasCheckin && (
-              <label className="flex items-start gap-3 text-sm">
-                <input name="share" type="checkbox" className="mt-1 size-5" />
-                <span>
-                  {m.book.share}
-                  <span className="block text-muted">{m.book.shareHint}</span>
-                </span>
-              </label>
-            )}
-            <label className="flex flex-col gap-1 text-sm">
-              {m.book.phone}
-              <input name="phone" type="tel" inputMode="tel" maxLength={20} className={inputClass} />
-            </label>
-            <Button type="submit" disabled={busy}>
-              {m.book.confirm}
-            </Button>
-            <Button type="button" variant="ghost" onClick={() => setSelected(null)}>
-              {m.common.cancel}
-            </Button>
-          </form>
-        </Card>
-      ) : (
-        <ul className="flex flex-col gap-2">
-          {open.map((s) => (
-            <li key={s.id}>
-              <button
-                type="button"
-                onClick={() => {
-                  setSelected(s);
-                  setMessage(null);
-                }}
-                className="flex min-h-14 w-full items-center justify-between gap-4 rounded-2xl border border-border bg-surface px-5 py-3 text-left hover:bg-accent-soft"
-              >
-                <span>
-                  <span className="block font-medium">{when(s.startsAt)}</span>
+      <div className={`grid gap-5 lg:items-start ${mine.length > 0 ? "lg:grid-cols-2" : "lg:max-w-2xl"}`}>
+        {mine.length > 0 && (
+          <Card className="min-w-0">
+            <h2 className="font-semibold">{m.book.yourBookings}</h2>
+            <ul className="flex flex-col gap-3">
+              {mine.map((s) => (
+                <li key={s.id} className="flex flex-col gap-2 border-t border-border pt-3 first:border-0 first:pt-0">
+                  <span className="font-medium">{when(s.startsAt)}</span>
                   <span className="text-sm text-muted">
                     {m.book.mode[s.mode]} · {s.location}
                   </span>
-                </span>
-                <span className="font-semibold text-accent">{m.book.book}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+                  {s.status === "cancelled" ? (
+                    <span className="text-sm text-urgent">{m.book.cancelled}</span>
+                  ) : (
+                    <Button variant="ghost" className="self-start" disabled={busy} onClick={() => cancel(s.id)}>
+                      {m.book.cancelBooking}
+                    </Button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </Card>
+        )}
+
+        <div className="flex min-w-0 flex-col gap-4">
+          {open.length === 0 ? (
+            <Card>
+              <p>{m.book.none}</p>
+              {[TELE_MANAS, ICALL].map((h) => (
+                <a key={h.id} href={`tel:${h.tel}`} className="flex flex-wrap justify-between gap-2 rounded-md border border-border px-4 py-3">
+                  <span className="min-w-0">
+                    <span className="block font-medium">{h.name[locale]}</span>
+                    <span className="text-sm text-muted">{h.hours[locale]}</span>
+                  </span>
+                  <span className="font-semibold text-accent">{h.number}</span>
+                </a>
+              ))}
+            </Card>
+          ) : selected ? (
+            <Card>
+              <h2 className="font-semibold">{m.book.confirmTitle}</h2>
+              <p>
+                {when(selected.startsAt)} · {m.book.mode[selected.mode]} · {selected.location}
+              </p>
+              <form onSubmit={confirm} className="flex flex-col gap-3">
+                {hasCheckin && (
+                  <label className="flex items-start gap-3 text-sm">
+                    <input name="share" type="checkbox" className="mt-1 size-5 accent-[var(--accent)]" />
+                    <span>
+                      {m.book.share}
+                      <span className="block text-muted">{m.book.shareHint}</span>
+                    </span>
+                  </label>
+                )}
+                <label className="flex flex-col gap-1 text-sm">
+                  {m.book.phone}
+                  <input name="phone" type="tel" inputMode="tel" maxLength={20} className={inputClass} />
+                </label>
+                <Button type="submit" disabled={busy}>
+                  {m.book.confirm}
+                </Button>
+                <Button type="button" variant="ghost" onClick={() => setSelected(null)}>
+                  {m.common.cancel}
+                </Button>
+              </form>
+            </Card>
+          ) : (
+            <ul className="flex flex-col gap-2">
+              {open.map((s) => (
+                <li key={s.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelected(s);
+                      setMessage(null);
+                    }}
+                    className="flex min-h-14 w-full items-center justify-between gap-4 rounded-md border border-border bg-surface px-4 py-3 text-left transition hover:border-accent/50 hover:bg-accent-soft sm:px-5"
+                  >
+                    <span className="min-w-0">
+                      <span className="block font-medium">{when(s.startsAt)}</span>
+                      <span className="text-sm text-muted">
+                        {m.book.mode[s.mode]} · {s.location}
+                      </span>
+                    </span>
+                    <span className="shrink-0 font-semibold text-accent">{m.book.book}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

@@ -11,7 +11,7 @@ export default async function ResultsPage({ params }: PageProps<"/results/[id]">
   if (!checkin) notFound();
 
   return (
-    <Page>
+    <Page width="wide">
       <ResultsView
         mode="saved"
         checkinId={checkin.id}

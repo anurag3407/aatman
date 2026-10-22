@@ -20,20 +20,20 @@ export function HistoryChart({ points, locale, labels }: { points: Point[]; loca
   const x = (i: number) => PAD.l + (i * (W - PAD.l - PAD.r)) / (usable.length - 1);
   const y = (frac: number) => PAD.t + (1 - frac) * (H - PAD.t - PAD.b);
   const series = [
-    { key: "mood" as const, max: 27, label: labels.mood, dash: "", marker: "circle" },
-    { key: "worry" as const, max: 21, label: labels.worry, dash: "5 4", marker: "square" },
+    { key: "mood" as const, max: 27, label: labels.mood, dash: "", marker: "circle", color: "var(--accent)" },
+    { key: "worry" as const, max: 21, label: labels.worry, dash: "5 4", marker: "square", color: "var(--periwinkle)" },
   ];
 
   return (
     <figure className="flex flex-col gap-2">
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={`${labels.mood}, ${labels.worry}`}>
+      <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="img" aria-label={`${labels.mood}, ${labels.worry}`}>
         {[0, 0.5, 1].map((f) => (
           <line key={f} x1={PAD.l} x2={W - PAD.r} y1={y(f)} y2={y(f)} stroke="var(--border)" strokeWidth={1} />
         ))}
         {series.map((s) => {
           const pts = usable.flatMap((p, i) => (p[s.key] === null ? [] : [[x(i), y(p[s.key]! / s.max)] as const]));
           return (
-            <g key={s.key} stroke="var(--accent)" fill="var(--accent)">
+            <g key={s.key} stroke={s.color} fill={s.color}>
               <polyline points={pts.map((p) => p.join(",")).join(" ")} fill="none" strokeWidth={2} strokeDasharray={s.dash} />
               {pts.map(([px, py], i) =>
                 s.marker === "circle" ? (
@@ -52,9 +52,13 @@ export function HistoryChart({ points, locale, labels }: { points: Point[]; loca
           {formatDate(usable.at(-1)!.at, locale, { day: "numeric", month: "short" })}
         </text>
       </svg>
-      <figcaption className="flex gap-4 text-sm text-muted">
-        <span>● {labels.mood}</span>
-        <span>▢ {labels.worry}</span>
+      <figcaption className="flex flex-wrap gap-4 text-sm text-muted">
+        <span>
+          <span className="text-accent">●</span> {labels.mood}
+        </span>
+        <span>
+          <span className="text-periwinkle">▢</span> {labels.worry}
+        </span>
       </figcaption>
     </figure>
   );
