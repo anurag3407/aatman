@@ -4,6 +4,8 @@ A wellbeing check-in for NIT Patna students. Students answer standard screening 
 
 > **Status:** the software is ready for a pilot. The launch also depends on people and approvals at NITP. See [docs/LAUNCH_CHECKLIST.md](docs/LAUNCH_CHECKLIST.md).
 
+**Documentation:** [docs/README.md](docs/README.md) is the index for the full engineering set — architecture, user flows, data flows, database reference, API, operations, and testing.
+
 ## Quick start (local)
 
 ```bash

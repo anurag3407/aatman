@@ -104,7 +104,7 @@ docker compose run --rm migrate           # apply migrations by hand
 
 - **Backups**: `pg_dump` nightly into `/opt/aatman/backups`, kept `BACKUP_KEEP_DAYS` days. **Copy them off the server**, e.g. from another machine:
   `rsync -a deploy@<vps>:/opt/aatman/backups/ ./aatman-backups/`. Answers and summaries in a dump are field-encrypted; tiers and timestamps are not.
-- **Restore**: `scripts/restore.sh /opt/aatman/backups/aatman-<stamp>.dump` (asks before replacing data). Test a restore before launch.
+- **Restore**: `deploy/scripts/restore.sh /opt/aatman/backups/aatman-<stamp>.dump` (asks before replacing data). Test a restore before launch.
 - **Retention** runs daily via the cron container. To run it now:
   `docker compose exec cron sh -c '. /run/cron.env; sh /opt/cron/retention.sh'`.
 - **Crisis alerting**: the cron container calls `/api/cron/alerts` every minute. That run escalates unacknowledged crisis/urgent alerts and sends appointment reminders. Set `ALERT_EMAILS` (fallback recipients), `CLINICAL_LEAD_EMAILS`, `NOTIFY_WEBHOOK_URL` (email transport) and, for reminders, `SMS_WEBHOOK_URL`. Create on-call shifts in **Staff → Alerts**. Without an email transport, alerts still appear on that page but nobody is paged; the page shows a warning.
