@@ -1,13 +1,14 @@
 import { Hero } from "@/components/landing/Hero";
 import { Navbar } from "@/components/landing/Navbar";
+import { getMessages } from "@/lib/i18n/server";
 
-// Landing page. The check-in flow (Phase 2) will replace the "coming soon" text.
-export default function Home() {
+export default async function Home() {
+  const { locale, m } = await getMessages();
   return (
-    <div className="grain flex flex-1 flex-col bg-ink text-white">
-      <Navbar />
+    <div lang={locale} className="grain flex flex-1 flex-col bg-ink text-white">
+      <Navbar locale={locale} m={m} />
       <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-5 pb-16 md:px-10">
-        <Hero />
+        <Hero locale={locale} m={m} />
       </main>
     </div>
   );
