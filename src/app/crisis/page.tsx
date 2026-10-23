@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { QuickExit } from "@/components/QuickExit";
 import { ANTI_RAGGING, crisisHelplines, EMERGENCY_112, TELE_MANAS, type Helpline } from "@/lib/safety/helplines";
 
 export const metadata: Metadata = {
@@ -14,7 +16,13 @@ export default function CrisisPage() {
   const others = crisisHelplines().filter((h) => h.id !== TELE_MANAS.id && h.id !== EMERGENCY_112.id);
 
   return (
-    <main className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-6 px-4 py-8">
+    <main className="mx-auto flex w-full max-w-lg flex-1 flex-col gap-6 px-4 py-4">
+      <nav className="flex items-center justify-between">
+        <Link href="/" className="text-sm text-muted underline underline-offset-4">
+          ← Aatman
+        </Link>
+        <QuickExit label="Quick exit · तुरंत बाहर" hint="Leave this site quickly / इस साइट से तुरंत बाहर निकलें" />
+      </nav>
       <header className="flex flex-col gap-2">
         <h1 className="text-2xl font-semibold leading-snug">
           You don&apos;t have to go through this alone.

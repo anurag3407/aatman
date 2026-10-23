@@ -35,6 +35,17 @@ test("any page opened offline falls back to the crisis page", async ({ page, con
   await expect(page.getByRole("link", { name: /Call 14416/ })).toBeVisible();
 });
 
+test("exercise pages visited once keep working offline", async ({ page, context }) => {
+  await primeServiceWorker(page);
+  await page.goto("/exercises/breathing");
+  await expect(page.getByRole("button", { name: "Start" })).toBeVisible();
+  await context.setOffline(true);
+
+  await page.reload();
+  await page.getByRole("button", { name: "Start" }).click();
+  await expect(page.getByText("Breathe in")).toBeVisible();
+});
+
 test("crisis page shows Hindi alongside English", async ({ page }) => {
   await page.goto("/crisis");
   await expect(page.locator('[lang="hi"]').first()).toContainText("आपको यह अकेले नहीं झेलना है");

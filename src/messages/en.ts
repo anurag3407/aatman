@@ -1,0 +1,435 @@
+/**
+ * English copy. `hi.ts` must have the same shape (enforced by the `Messages` type).
+ * Clinical wording (questionnaire items, results, templates, crisis text) is DRAFT
+ * and needs clinical-lead sign-off. See docs/clinical-review.md.
+ * Placeholders use {name}; see `fmt()` in lib/i18n.
+ */
+const en = {
+  common: {
+    appName: "Aatman",
+    helpNow: "Help now",
+    quickExit: "Quick exit",
+    quickExitLabel: "Leave this site quickly",
+    language: "Language",
+    back: "Back",
+    next: "Next",
+    skip: "Skip",
+    continue: "Continue",
+    cancel: "Cancel",
+    signIn: "Sign in",
+    signOut: "Sign out",
+    optional: "Optional",
+    yes: "Yes",
+    no: "No",
+    loading: "Loading…",
+    genericError: "Something went wrong. Please try again.",
+    offline: "You're offline. Crisis numbers still work. Open Help now.",
+    nav: {
+      home: "Home",
+      checkin: "Check-in",
+      exercises: "Exercises",
+      chat: "Reflect",
+      book: "Counsellor",
+      history: "History",
+      settings: "Settings",
+    },
+    notDiagnosis: "Aatman is a wellbeing check-in, not a diagnosis or a crisis service.",
+    privacyNotice: "Privacy notice",
+  },
+
+  home: {
+    title: "A quiet space to check in with yourself",
+    body: "Two minutes, a few honest answers, and support that fits where you are. Made for NIT Patna students.",
+    start: "Start a check-in",
+    exercises: "Try a calming exercise",
+    howTitle: "How it works",
+    how: [
+      "Answer a few standard questions about the last two weeks. Skip any you like.",
+      "See what your answers suggest, in plain words, with no labels or diagnosis.",
+      "Get a next step that fits: calming exercises, a counsellor booking, or help right now.",
+    ],
+    privacyTitle: "Your privacy",
+    privacy: [
+      "Your NITP email only proves you're a student. It isn't stored.",
+      "Your answers are encrypted. Faculty, wardens and the administration can't see them.",
+      "A counsellor sees your results only if you choose to share them.",
+    ],
+  },
+
+  consent: {
+    title: "Before you start",
+    updated: "We've updated how Aatman works. Please read and agree again.",
+    intro: "Please read this. It explains what happens to your answers.",
+    points: [
+      "Your NITP email is only used to confirm you're a student. It's turned into a code (a pseudonym) and is never stored.",
+      "Your answers are encrypted. Faculty, wardens and the administration cannot see your individual results.",
+      "This is a screening check-in, not a diagnosis or treatment.",
+      "No one watches this app in real time. If you're in danger, call Tele-MANAS 14416 or 112.",
+      "A counsellor sees your results only if you choose to share them, each time.",
+      "Short AI-written notes are made from your scores only, never your name or what you type in the check-in.",
+      "You can download or permanently erase your data at any time in Settings. Check-ins are deleted automatically after 12 months.",
+    ],
+    ageQuestion: "Are you 18 or older?",
+    adult: "Yes, I'm 18 or older",
+    minor: "No, I'm under 18",
+    minorTitle: "You can still use Aatman",
+    minorBody:
+      "Because you're under 18, we won't create an account or save anything. You can do the check-in and see your results on this device only.",
+    minorStart: "Start without saving",
+    agree: "I understand and agree",
+  },
+
+  signin: {
+    title: "Sign in with your NITP account",
+    body: "Use your @nitp.ac.in account. We only use it to confirm you're a student.",
+    google: "Continue with Google",
+    microsoft: "Continue with Microsoft",
+    none: "Sign-in isn't set up yet. Please contact the counselling cell.",
+    dev: "Developer sign-in (local only)",
+    devEmail: "Test email",
+    devSubmit: "Sign in",
+    minor: "Under 18? Use Aatman without an account",
+    errors: {
+      wrong_domain: "Please use your NITP (@nitp.ac.in) account.",
+      wrong_tenant: "Please use your NITP Microsoft account.",
+      unverified: "Your email address isn't verified with Google.",
+      no_email: "We couldn't read an email address from that account.",
+      failed: "Sign-in didn't complete. Please try again.",
+    },
+  },
+
+  checkin: {
+    title: "Check-in",
+    intro: "A few quick questions about the last 2 weeks. You can skip any question.",
+    progress: "{done} of {total}",
+    stem: "Over the last 2 weeks, how often have you been bothered by:",
+    likert: ["Not at all", "Several days", "More than half the days", "Nearly every day"],
+    sensitiveIntro:
+      "The next question is personal. Many students have these thoughts, especially under pressure. An honest answer helps us point you to the right support.",
+    cssrsIntro:
+      "Thank you for telling us. A few yes/no questions about the past month help us understand how to support you.",
+    inlineSupport: "If you're in danger right now, call Tele-MANAS 14416 (free, 24×7) or 112.",
+    cssrs: {
+      "cssrs.wish": "In the past month, have you wished you were dead or wished you could go to sleep and not wake up?",
+      "cssrs.active": "In the past month, have you actually had any thoughts of killing yourself?",
+      "cssrs.method": "Have you been thinking about how you might do this?",
+      "cssrs.intent": "Have you had these thoughts and had some intention of acting on them?",
+      "cssrs.plan": "Have you started to work out, or worked out, the details of how to kill yourself? Do you intend to carry out this plan?",
+      "cssrs.behaviorEver": "Have you ever done anything, started to do anything, or prepared to do anything to end your life?",
+      "cssrs.behaviorRecent": "Was this within the past 3 months?",
+    },
+    campus: {
+      "campus.sleep": {
+        q: "How has your sleep been over the last 2 weeks?",
+        options: ["Good", "Okay", "Poor", "Very poor"],
+      },
+      "campus.academics": {
+        q: "How much is academic pressure (exams, assignments, placements) affecting you?",
+        options: ["Not at all", "A little", "Quite a bit", "A lot"],
+      },
+      "campus.safety": {
+        q: "Recently, have you felt unsafe, harassed or ragged on campus or in the hostel?",
+        options: { no: "No", yes: "Yes", prefer_not: "Prefer not to say" },
+      },
+    },
+    deeper: {
+      title: "Would you like a deeper 3-minute check?",
+      body: "It looks like you've been carrying a lot lately. A few more questions help us suggest better support.",
+      yes: "Yes, continue",
+      no: "No, show my results",
+    },
+    freeText: {
+      q: "Is there anything else on your mind?",
+      hint: "Optional. This is checked for safety and then discarded. It's never saved or sent to an AI.",
+      placeholder: "Write as much or as little as you like…",
+    },
+    submit: "See my results",
+    submitting: "Preparing your results…",
+    restart: "Start over",
+    draftNote: "Your answers stay on this device until you finish. Quick exit clears them.",
+    statelessBadge: "Not saving. Results stay on this device.",
+    phq9: [
+      "Little interest or pleasure in doing things",
+      "Feeling down, depressed, or hopeless",
+      "Trouble falling or staying asleep, or sleeping too much",
+      "Feeling tired or having little energy",
+      "Poor appetite or overeating",
+      "Feeling bad about yourself, or that you are a failure or have let yourself or your family down",
+      "Trouble concentrating on things, such as reading or watching videos",
+      "Moving or speaking so slowly that other people could have noticed, or the opposite: being so fidgety or restless that you have been moving around a lot more than usual",
+      "Thoughts that you would be better off dead, or of hurting yourself in some way",
+    ],
+    gad7: [
+      "Feeling nervous, anxious, or on edge",
+      "Not being able to stop or control worrying",
+      "Worrying too much about different things",
+      "Trouble relaxing",
+      "Being so restless that it is hard to sit still",
+      "Becoming easily annoyed or irritable",
+      "Feeling afraid, as if something awful might happen",
+    ],
+  },
+
+  results: {
+    title: "Your check-in",
+    heading: {
+      mild: "You seem to be coping reasonably well right now.",
+      moderate: "You've been carrying quite a lot lately.",
+      elevated: "Thank you for being honest. Some of what you shared matters a lot.",
+      urgent: "What you're going through sounds really hard. Please talk to someone soon.",
+      crisis: "Your safety matters most right now.",
+    },
+    summaryTitle: "A note for you",
+    summaryLoading: "Writing a short note for you…",
+    aiNote: "Written with AI from your scores only, then checked by our safety filters.",
+    details: "Details",
+    detailsNote: "These come from standard screening questionnaires (PHQ-9, GAD-7). They are not a diagnosis.",
+    scale: {
+      phq9: "Mood",
+      gad7: "Worry",
+      phq2: "Mood (short screen)",
+      gad2: "Worry (short screen)",
+    },
+    level: {
+      minimal: "Low",
+      mild: "Mild",
+      moderate: "Moderate",
+      moderately_severe: "High",
+      severe: "Very high",
+      positive: "Worth a closer look",
+      negative: "Within the usual range",
+      incomplete: "Not enough answers",
+    },
+    crisisTitle: "Please reach out now",
+    crisisBody: "Call now, or go to someone you trust and stay with them. You don't have to go through this alone.",
+    callTeleManas: "Call Tele-MANAS 14416",
+    call112: "Call 112",
+    allHelplines: "All helplines",
+    nextTitle: "Next steps",
+    contact: {
+      title: "Ask the counsellor to contact you",
+      body: "Send your latest results and a way to reach you to the NITP counselling team. Nothing is shared unless you send this.",
+      name: "What should they call you? (optional)",
+      phone: "Phone number",
+      email: "Or email",
+      bestTime: "Best time to reach you (optional)",
+      consent: "I agree to share my latest check-in results and these contact details with the NITP counselling team.",
+      submit: "Send request",
+      sent: "Sent. The counselling team will reach out during working hours. If you feel unsafe before then, call 14416.",
+      needContact: "Add a phone number or email so they can reach you.",
+      needConsent: "Please tick the box to agree to sharing.",
+      stateless: "You can visit the counselling cell in person, or call Tele-MANAS 14416 anytime.",
+    },
+    book: {
+      title: "Talk to a counsellor",
+      body: "Book a free, confidential session on campus.",
+      cta: "See available times",
+    },
+    exercises: {
+      title: "Try something calming now",
+      body: "Breathing, grounding and sleep tools take a few minutes.",
+      cta: "Open exercises",
+    },
+    chat: {
+      title: "Talk it through",
+      body: "A reflective chat that asks questions to help you think things over.",
+      cta: "Open reflective chat",
+    },
+    recheck: {
+      title: "Check in again in 2 weeks",
+      body: "Repeating the check-in helps you notice changes early.",
+      ics: "Add a reminder to my calendar",
+    },
+    ragging: {
+      title: "Feeling unsafe or facing ragging?",
+      body: "You can report ragging confidentially to the national helpline. Aatman can't take reports.",
+    },
+    tips: {
+      sleep:
+        "You mentioned sleep has been rough. A fixed wake-up time, less screen time in the hour before bed, and no caffeine after 4 pm are small changes that often help.",
+      academics:
+        "Academic pressure came up as a big factor. Working in 25-minute blocks, and talking to a faculty advisor or a senior you trust about your workload, can make it feel more manageable.",
+    },
+    notSaved: "You were offline, so this check-in wasn't saved.",
+    stateless: "These results are only on this device and disappear when you close the tab.",
+    newCheckin: "Do another check-in",
+    viewHistory: "See your history",
+  },
+
+  templates: {
+    mild: "Thanks for checking in. Your answers suggest you're coping reasonably well right now. Small, steady habits like regular sleep, time outdoors and talking to people you trust help keep it that way. Checking in again in a couple of weeks can help you notice changes early.",
+    moderate:
+      "Thank you for being honest. Your answers suggest you've been carrying quite a lot over the last two weeks, and that's more common among students than it may feel. Talking with a counsellor can really help. It's free and confidential, and you don't need a \"big\" reason to go. Meanwhile, the calming exercises below can take the edge off hard moments.",
+    elevated:
+      "Thank you for sharing something so personal. Some of your answers suggest you've had thoughts that deserve care and attention, and you don't have to handle them alone. Talking to a counsellor, or calling Tele-MANAS (14416) at any hour, is a strong and sensible step. If things ever feel unsafe, please call right away.",
+    urgent:
+      "What you're going through sounds really hard, and we're glad you told us. Your answers suggest it would help to talk to someone soon, today if you can. Tele-MANAS (14416) is free and open 24×7, and you can ask the NITP counsellor to contact you below.",
+    crisis:
+      "Your safety matters most right now. Please call Tele-MANAS on 14416 or emergency services on 112 now, or go to someone you trust and stay with them. You don't have to go through this alone. People are ready to help, right now.",
+  },
+
+  book: {
+    title: "Talk to a counsellor",
+    body: "Sessions are free and confidential. Pick a time that works for you.",
+    none: "No open slots in the next 2 weeks. You don't have to wait. These are free:",
+    mode: { in_person: "In person", phone: "Phone", video: "Video" },
+    book: "Book",
+    confirmTitle: "Confirm your booking",
+    share: "Share my latest check-in with the counsellor",
+    shareHint: "This helps them prepare. Leave it unticked to keep your results private.",
+    phone: "Phone number (optional, in case they need to reschedule)",
+    confirm: "Confirm booking",
+    booked: "Booked. See you then.",
+    taken: "Sorry, someone just booked that time. Please pick another.",
+    yourBookings: "Your upcoming sessions",
+    cancelBooking: "Cancel booking",
+    cancelled: "Booking cancelled.",
+    contactInstead: "Prefer they contact you?",
+  },
+
+  history: {
+    title: "Your history",
+    empty: "No check-ins yet.",
+    chartTitle: "Your scores over time",
+    chartNote: "Lower is calmer. Mood is out of 27, worry out of 21. Only check-ins with the full questions are shown.",
+    tier: {
+      mild: "Low distress",
+      moderate: "Moderate",
+      elevated: "Needs care",
+      urgent: "High concern",
+      crisis: "Urgent support",
+    },
+    view: "View",
+    keep: "Keep",
+    kept: "Kept",
+    retention: "Check-ins are deleted automatically after {months} months unless you choose to keep them.",
+  },
+
+  settings: {
+    title: "Settings",
+    exportTitle: "Download your data",
+    exportBody: "Everything Aatman stores about you, as a JSON file.",
+    exportCta: "Download my data",
+    eraseTitle: "Erase everything",
+    eraseBody: "Permanently delete your account, all check-ins, bookings and contact requests. This can't be undone.",
+    eraseConfirm: "Type ERASE to confirm",
+    eraseCta: "Erase my data",
+    erased: "Your data has been erased.",
+  },
+
+  exercises: {
+    title: "Calming exercises",
+    intro: "Short tools you can use anytime. They work offline once loaded.",
+    all: "All exercises",
+    breathing: {
+      title: "Box breathing",
+      desc: "Slow, even breaths to calm your body. 2 minutes.",
+      in: "Breathe in",
+      hold: "Hold",
+      out: "Breathe out",
+      start: "Start",
+      stop: "Stop",
+      rounds: "Round {n}",
+    },
+    grounding: {
+      title: "5-4-3-2-1 grounding",
+      desc: "Bring yourself back to the present using your senses.",
+      steps: [
+        "Name 5 things you can see.",
+        "Name 4 things you can touch.",
+        "Name 3 things you can hear.",
+        "Name 2 things you can smell.",
+        "Name 1 thing you can taste.",
+      ],
+      done: "Well done. Notice how you feel now.",
+      restart: "Start again",
+    },
+    sleep: {
+      title: "Sleep basics",
+      desc: "Small changes that help hostel sleep.",
+      tips: [
+        "Wake up at the same time every day, even after a late night.",
+        "Put the phone away 30–60 minutes before bed. Use night mode if you can't.",
+        "Avoid tea, coffee and energy drinks after 4 pm.",
+        "If you can't sleep after 20 minutes, get up and do something calm in dim light.",
+        "Earplugs and an eye mask help with noisy rooms and early light.",
+        "Short naps (under 30 minutes) before 4 pm are fine. Long naps make nights harder.",
+      ],
+    },
+    thought: {
+      title: "Thought record",
+      desc: "Untangle a stressful thought, step by step (a CBT tool).",
+      privacy: "Nothing here is saved or sent anywhere.",
+      steps: {
+        situation: { label: "What happened?", hint: "Where were you, and what was going on?" },
+        thought: { label: "What went through your mind?", hint: "The automatic thought, word for word." },
+        emotion: { label: "What did you feel, and how strongly (0–100)?", hint: "For example: anxious 80, ashamed 60." },
+        evidenceFor: { label: "What supports this thought?", hint: "Facts, not feelings." },
+        evidenceAgainst: { label: "What doesn't fit this thought?", hint: "What would you tell a friend in the same spot?" },
+        balanced: { label: "A more balanced thought", hint: "Something kinder that is still true." },
+        rerate: { label: "How strong is the feeling now (0–100)?", hint: "Even a small drop counts." },
+      },
+      download: "Download as text",
+      clear: "Clear",
+    },
+  },
+
+  chat: {
+    title: "Reflective chat",
+    intro: "A space to think things through. It asks questions to help you reflect. It isn't a counsellor and can't give medical advice.",
+    noNames: "Please don't include names, phone numbers or room numbers.",
+    notSaved: "This chat isn't saved. It disappears when you leave the page.",
+    placeholder: "What's on your mind?",
+    send: "Send",
+    unavailable: "Reflective chat isn't available right now. Try a calming exercise, or talk to someone.",
+    pausedTitle: "Let's pause the chat here",
+    pausedBody: "What you wrote sounds serious, and you deserve to talk to a person. Please reach out now.",
+    raggingBody: "That sounds really difficult. Aatman can't take reports, but the national anti-ragging helpline can, confidentially.",
+    limit: "You've reached the chat limit for now. Take a break and come back later.",
+    fallback: "I'm having trouble responding right now. Would you like to try a breathing exercise, or talk to someone?",
+    you: "You",
+    companion: "Aatman",
+  },
+
+  privacy: {
+    title: "Privacy notice",
+    updated: "Version {version}",
+    sections: [
+      {
+        h: "Who runs Aatman",
+        p: "Aatman is run for NIT Patna students with the institute's counselling cell. Questions or requests: contact the counselling cell (the grievance officer named on the institute website).",
+      },
+      {
+        h: "What we collect",
+        p: "Your check-in answers and the scores calculated from them, the time of each check-in, any bookings you make, and contact details only if you choose to share them with a counsellor. We do not store your email, name or roll number. Your email is turned into a one-way code (a pseudonym) at sign-in.",
+      },
+      {
+        h: "What we don't keep",
+        p: "Anything you type in the check-in's free-text box or the reflective chat is checked for safety and then discarded. It is never saved.",
+      },
+      {
+        h: "Who can see it",
+        p: "Only you can see your results. A counsellor sees them only when you send a contact request or book a session with sharing turned on. Faculty, wardens and administrators cannot see individual results. The institute sees only totals for groups of 10 or more students.",
+      },
+      {
+        h: "AI processing",
+        p: "Short notes and the reflective chat may be processed by an AI provider under a zero-data-retention agreement. The AI receives scores, or chat text with names and numbers removed, and never your identity.",
+      },
+      {
+        h: "How long we keep it",
+        p: "Check-ins are deleted automatically after 12 months unless you choose to keep them. You can download or erase everything at any time in Settings.",
+      },
+      {
+        h: "Your rights",
+        p: "Under India's Digital Personal Data Protection Act, 2023, you can access, correct and erase your data, withdraw consent, and raise a grievance. Withdrawing consent is the same as erasing your data in Settings.",
+      },
+      {
+        h: "Not an emergency service",
+        p: "No one monitors Aatman in real time. If you are in danger, call Tele-MANAS 14416 or 112.",
+      },
+    ],
+  },
+};
+
+export default en;
+export type Messages = typeof en;
