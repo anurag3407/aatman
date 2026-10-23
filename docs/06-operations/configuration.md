@@ -98,9 +98,9 @@ For local dev with real SSO: `http://localhost:3000/api/auth/callback/{provider}
 
 | Variable | Required | Notes |
 |---|---|---|
-| `ALERT_EMAILS` | recommended | Fallback recipients; escalation fallback |
+| `ALERT_EMAILS` | production required | Fallback recipients; escalation fallback |
 | `CLINICAL_LEAD_EMAILS` | recommended | Escalation level 2; falls back to `ALERT_EMAILS` |
-| `NOTIFY_WEBHOOK_URL` | production recommended | Receives `POST { to, subject, text }` |
+| `NOTIFY_WEBHOOK_URL` | production required | Receives `POST { to, subject, text }` |
 | `NOTIFY_WEBHOOK_TOKEN` | optional | Sent as `Authorization: Bearer …` |
 | `SMS_WEBHOOK_URL` | optional | Receives `POST { to, text }` |
 | `SMS_WEBHOOK_TOKEN` | optional | Bearer token |

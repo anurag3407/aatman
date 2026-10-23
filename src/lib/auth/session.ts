@@ -2,6 +2,7 @@ import "server-only";
 import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 import { env } from "@/lib/env";
+import { roleFor } from "./identity";
 
 /**
  * Stateless session in a signed, httpOnly cookie.
@@ -60,7 +61,14 @@ export function sessionCookieOptions() {
 
 export async function getSession(): Promise<Session | null> {
   const store = await cookies();
-  return verifySession(store.get(SESSION_COOKIE)?.value);
+  const session = await verifySession(store.get(SESSION_COOKIE)?.value);
+  // Staff access ends as soon as the email leaves COUNSELLOR_EMAILS / ADMIN_EMAILS, not when the cookie expires.
+  if (session && session.role !== "student") {
+    const e = env();
+    const current = session.email ? roleFor(session.email, { counsellorEmails: e.COUNSELLOR_EMAILS, adminEmails: e.ADMIN_EMAILS }) : null;
+    if (current !== session.role) return null;
+  }
+  return session;
 }
 
 /** Short-lived signed payloads, e.g. OIDC state carried across the redirect. */

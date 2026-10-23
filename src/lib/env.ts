@@ -99,7 +99,10 @@ export function env(): Env {
     if (e.DATABASE_URL.startsWith("pglite:") && process.env.ALLOW_PGLITE_IN_PRODUCTION !== "true") {
       problems.push("Use a managed Postgres DATABASE_URL in production");
     }
-    if (!e.CRON_SECRET) problems.push("CRON_SECRET is required so data retention runs");
+    if (!e.CRON_SECRET) problems.push("CRON_SECRET is required so data retention and crisis-alert escalation run");
+    // Crisis and urgent check-ins page staff. Without these, alerts are queued and never delivered.
+    if (!e.NOTIFY_WEBHOOK_URL) problems.push("NOTIFY_WEBHOOK_URL is required so crisis alerts reach staff");
+    if (!e.ALERT_EMAILS.length) problems.push("ALERT_EMAILS is required as the crisis-alert fallback when no on-call shift is set");
     if (!googleConfigured(e) && !microsoftConfigured(e)) problems.push("Configure Google or Microsoft SSO");
     if (problems.length) throw new Error(`Unsafe production configuration:\n  ${problems.join("\n  ")}`);
   }

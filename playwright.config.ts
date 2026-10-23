@@ -45,6 +45,8 @@ export default defineConfig({
         GOOGLE_CLIENT_ID: "e2e-unused",
         GOOGLE_CLIENT_SECRET: "e2e-unused",
         CRON_SECRET: "e2e-cron-secret-that-is-long-enough-0123456789",
+        NOTIFY_WEBHOOK_URL: "http://127.0.0.1:9/e2e-unused",
+        ALERT_EMAILS: "oncall@nitp.ac.in",
       },
     },
     {

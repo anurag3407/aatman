@@ -33,7 +33,8 @@ const slotForm = z.object({
   weeks: z.coerce.number().int().min(1).max(12),
   location: z.string().trim().min(1).max(120),
   mode: z.enum(["in_person", "phone", "video"]),
-  isUrgent: z.coerce.boolean(),
+  // An unticked checkbox is absent from the form data entirely.
+  isUrgent: z.string().optional().transform((v) => v === "on"),
 });
 
 export async function createSlotsAction(formData: FormData) {

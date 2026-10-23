@@ -23,11 +23,24 @@ export const MUST_DETECT: { text: string; atLeast: Exclude<CrisisLevel, "none"> 
   { text: "I won't be here tomorrow", atLeast: "acute" },
   { text: "planning to hang myself", atLeast: "acute" },
   { text: "I KILL MYSELF!!!", atLeast: "acute" },
+  { text: "i want to kms", atLeast: "acute" },
+  { text: "gonna kms lol", atLeast: "acute" },
+  { text: "kms", atLeast: "acute" },
+  { text: "i want to unalive myself", atLeast: "acute" },
+  { text: "I want to be dead", atLeast: "acute" },
+  { text: "i took all my sleeping pills", atLeast: "acute" },
+  { text: "swallowed a bunch of pills", atLeast: "acute" },
+  { text: "I'm going to jump in front of a train", atLeast: "acute" },
+  { text: "i have a rope ready", atLeast: "acute" },
+  { text: "this is my goodbye note", atLeast: "acute" },
+  { text: "i want to end everything", atLeast: "acute" },
+  { text: "I'll end it tonight", atLeast: "acute" },
   // English: self-harm
   { text: "I cut myself last night", atLeast: "self_harm" },
   { text: "I've been hurting myself", atLeast: "self_harm" },
   { text: "started self-harming again", atLeast: "self_harm" },
   { text: "I burn myself when it gets bad", atLeast: "self_harm" },
+  { text: "cutting again", atLeast: "self_harm" },
   // English: passive
   { text: "everyone would be better off without me", atLeast: "passive" },
   { text: "there's no reason to live", atLeast: "passive" },
@@ -37,6 +50,15 @@ export const MUST_DETECT: { text: string; atLeast: Exclude<CrisisLevel, "none"> 
   { text: "I just want to disappear", atLeast: "passive" },
   { text: "so tired of living", atLeast: "passive" },
   { text: "I wish I could die", atLeast: "passive" },
+  { text: "i should just die", atLeast: "passive" },
+  { text: "i deserve to die", atLeast: "passive" },
+  { text: "I'd rather be dead", atLeast: "passive" },
+  { text: "i dont want to be here anymore", atLeast: "passive" },
+  { text: "i want to stop existing", atLeast: "passive" },
+  { text: "nobody would miss me if i was gone", atLeast: "passive" },
+  { text: "i don't see a future for myself", atLeast: "passive" },
+  { text: "i can't take it anymore", atLeast: "passive" },
+  { text: "i want to sleep forever and never wake up", atLeast: "passive" },
 
   // Hinglish: acute
   { text: "main mar jaana chahta hoon", atLeast: "acute" },
@@ -57,6 +79,13 @@ export const MUST_DETECT: { text: string; atLeast: Exclude<CrisisLevel, "none"> 
   { text: "zehar kha lunga", atLeast: "acute" },
   { text: "nas kaat lunga", atLeast: "acute" },
   { text: "suicide kar lunga", atLeast: "acute" },
+  { text: "khudkushi kar lunga", atLeast: "acute" },
+  { text: "khudkhushi ke khayal aate hain", atLeast: "acute" },
+  { text: "mujhe mar jana hai", atLeast: "acute" },
+  { text: "chhat se kood jaunga", atLeast: "acute" },
+  { text: "train ke aage kood jaunga", atLeast: "acute" },
+  { text: "neend ki goliyan kha lunga", atLeast: "acute" },
+  { text: "khatam kar dunga khud ko", atLeast: "acute" },
   // Hinglish: self-harm
   { text: "khud ko chot pahunchata hoon", atLeast: "self_harm" },
   { text: "apne aap ko hurt karti hu", atLeast: "self_harm" },
@@ -70,6 +99,9 @@ export const MUST_DETECT: { text: string; atLeast: Exclude<CrisisLevel, "none"> 
   { text: "zindagi se thak gaya hoon", atLeast: "passive" },
   { text: "sab kuch khatam ho gaya", atLeast: "passive" },
   { text: "koi fayda nahi jeene ka", atLeast: "passive" },
+  { text: "jeene ka koi matlab nahi", atLeast: "passive" },
+  { text: "zinda nahi rehna", atLeast: "passive" },
+  { text: "ab aur nahi jee sakta", atLeast: "passive" },
 
   // Devanagari: acute
   { text: "मैं आत्महत्या करना चाहता हूं", atLeast: "acute" },
@@ -81,6 +113,10 @@ export const MUST_DETECT: { text: string; atLeast: Exclude<CrisisLevel, "none"> 
   { text: "ज़हर खा लूंगा", atLeast: "acute" },
   { text: "ज़िंदगी खत्म कर दूंगा", atLeast: "acute" },
   { text: "ज़िन्दगी ख़त्म करना है", atLeast: "acute" },
+  { text: "ख़ुदकुशी कर लूंगा", atLeast: "acute" },
+  { text: "मुझे मरना है", atLeast: "acute" },
+  { text: "छत से कूद जाऊंगा", atLeast: "acute" },
+  { text: "नींद की गोलियां खा लूंगा", atLeast: "acute" },
   // Devanagari: self-harm
   { text: "खुद को चोट पहुंचाता हूं", atLeast: "self_harm" },
   // Devanagari: passive
@@ -89,6 +125,9 @@ export const MUST_DETECT: { text: string; atLeast: Exclude<CrisisLevel, "none"> 
   { text: "ज़िंदगी से थक गया हूं", atLeast: "passive" },
   { text: "सब कुछ खत्म हो गया", atLeast: "passive" },
   { text: "मैं तो मर जाऊँगा", atLeast: "passive" },
+  { text: "जीने का कोई मतलब नहीं", atLeast: "passive" },
+  { text: "अब और नहीं जी सकता", atLeast: "passive" },
+  { text: "ज़िंदा नहीं रहना", atLeast: "passive" },
 ];
 
 /** Everyday student language that must NOT trigger the detector. */
@@ -110,6 +149,12 @@ export const MUST_NOT_DETECT: string[] = [
   "परीक्षा का तनाव है",
   "succeeded in the viva finally",
   "my friend is suspicious of everything",
+  "the hostel is 5 kms from the station",
+  "I need to take my pills after dinner",
+  "goli kha li sar dard ke liye",
+  "end of semester everything is due",
+  "I can't wait for the fest",
+  "the train was late again",
 ];
 
 /**

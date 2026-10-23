@@ -45,7 +45,6 @@ export function CheckinFlow({ stateless }: { stateless: boolean }) {
   const [state, setState] = useState<FlowState>(EMPTY_FLOW);
   const [loaded, setLoaded] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
@@ -67,12 +66,13 @@ export function CheckinFlow({ stateless }: { stateless: boolean }) {
 
   async function submit() {
     setSubmitting(true);
-    setError(null);
     const submission = toSubmission(state);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { textDetection, ...publicTriage } = triage(submission.answers);
+    const highRisk = publicTriage.tier === "urgent" || publicTriage.tier === "crisis";
+
     const finishLocally = (reason: "stateless" | "offline") => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { textDetection, ...publicTriage } = triage(submission.answers);
       saveLocalResult({ triage: publicTriage, campus: submission.campus, createdAt: new Date().toISOString(), reason });
       sessionStorage.removeItem(DRAFT_KEY);
       router.push("/results/local");
@@ -86,17 +86,17 @@ export function CheckinFlow({ stateless }: { stateless: boolean }) {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ ...submission, locale }),
       });
+      // An expired session must never stand between a high-risk student and the helplines.
+      if ((res.status === 401 || res.status === 403) && highRisk) return finishLocally("offline");
       if (res.status === 401) return router.push("/signin");
       if (res.status === 403) return router.push("/consent");
       if (!res.ok) throw new Error(String(res.status));
       const { id } = (await res.json()) as { id: string };
       sessionStorage.removeItem(DRAFT_KEY);
       router.push(`/results/${id}`);
-    } catch (err) {
-      // Offline or server down: results are still computed and shown, just not saved.
-      if (err instanceof TypeError) return finishLocally("offline");
-      setError(m.common.genericError);
-      setSubmitting(false);
+    } catch {
+      // Offline, rate-limited or server error: results are still computed and shown, just not saved.
+      finishLocally("offline");
     }
   }
 
@@ -141,7 +141,6 @@ export function CheckinFlow({ stateless }: { stateless: boolean }) {
             <h2 ref={headingRef} tabIndex={-1} className="font-serif text-[1.6rem] font-medium leading-snug outline-none">
               {m.checkin.submit}
             </h2>
-            {error && <Banner tone="urgent">{error}</Banner>}
             <Button onClick={submit} disabled={submitting} className="w-full">
               {submitting ? m.checkin.submitting : m.checkin.submit}
             </Button>

@@ -138,3 +138,21 @@ test("students can't open staff pages, and admins see aggregates only", async ({
   await expect(admin).toHaveURL(/\/admin$/);
   await admin.close();
 });
+
+test("a server error on save still shows a crisis-tier student the helplines", async ({ page }) => {
+  await studentSignIn(page);
+  await page.route("**/api/checkins", (route) => route.fulfill({ status: 500, body: "{}" }));
+  await answerTier1(page, "Nearly every day");
+  await choose(page, "Yes"); // wish to be dead
+  await choose(page, "Yes"); // active thoughts
+  await choose(page, "Yes"); // method
+  await choose(page, "Yes"); // intent
+  await choose(page, "No"); // plan
+  await choose(page, "No"); // behaviour ever
+  await page.getByRole("button", { name: "See my results" }).click();
+
+  await expect(page).toHaveURL(/\/results\/local$/);
+  await expect(page.getByText(/We couldn't save this check-in/)).toBeVisible();
+  await expect(page.getByRole("link", { name: "Call Tele-MANAS 14416" })).toHaveAttribute("href", "tel:14416");
+  await expect(page.getByRole("link", { name: "Call 112" })).toHaveAttribute("href", "tel:112");
+});

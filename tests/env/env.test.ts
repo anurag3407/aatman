@@ -21,6 +21,8 @@ const prodBase = {
   CRON_SECRET: "c".repeat(40),
   DEV_LOGIN: "false",
   LLM_PROVIDER: "none",
+  NOTIFY_WEBHOOK_URL: "https://relay.example/send",
+  ALERT_EMAILS: "oncall@nitp.ac.in",
 };
 
 describe("env", () => {
@@ -47,6 +49,8 @@ describe("env", () => {
     [{ DATABASE_URL: "pglite:memory" }, /Postgres/],
     [{ CRON_SECRET: undefined }, /CRON_SECRET/],
     [{ GOOGLE_CLIENT_ID: undefined }, /SSO/],
+    [{ NOTIFY_WEBHOOK_URL: undefined }, /NOTIFY_WEBHOOK_URL/],
+    [{ ALERT_EMAILS: undefined }, /ALERT_EMAILS/],
   ])("refuses unsafe production setting %o", (override, message) => {
     withEnv({ ...prodBase, ...override });
     expect(() => env()).toThrow(message);

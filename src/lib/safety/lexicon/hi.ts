@@ -14,12 +14,19 @@ export const HI_LEXICON: LexiconEntry[] = [
   { id: "hi.zindagi_khatam_kar", category: "acute", pattern: /जि(ं|न्)दगी\s+खत्म\s+कर/u },
   { id: "hi.sab_khatam_kar", category: "acute", pattern: /सब\s*(कुछ)?\s+खत्म\s+कर\s+(द|ल)/u },
   { id: "hi.nas_kaat", category: "acute", pattern: /नस\s+काट/u },
+  // Added 2026-10-24 after a recall probe; pending clinical-lead review like the rest of v1.
+  { id: "hi.khudkushi", category: "acute", pattern: /खुद\s*कुशी/u },
+  { id: "hi.marna_hai", category: "acute", pattern: /(मरना|मर\s*जाना)\s+है/u },
+  { id: "hi.kood_jaana", category: "acute", pattern: /(छत|बिल्डिंग|पुल|ट्रेन|टेरेस)\s+(से|के\s+आगे|के\s+नीचे)\s+कूद/u },
+  { id: "hi.goliyan_kha", category: "acute", pattern: /(नींद\s+की|सारी|सब|बहुत\s+सारी)\s+गोल(ी|ियां|िया)\s+खा/u },
 
   // self_harm
   { id: "hi.khud_ko_chot", category: "self_harm", pattern: /(खुद|अपने आप)\s*को\s+(चोट|काट|जला|सजा)/u },
 
   // passive
-  { id: "hi.jeene_ka_mann_nahi", category: "passive", pattern: /जीने\s+का\s+(मन|दिल)\s+नहीं/u },
+  { id: "hi.jeene_ka_mann_nahi", category: "passive", pattern: /जीने\s+का\s+(कोई\s+)?(मन|दिल|मतलब|फायदा)\s+नहीं/u },
+  { id: "hi.nahi_jee_sakta", category: "passive", pattern: /(और|अब)\s+नहीं\s+जी\s+(सकता|सकती|पाऊंगा|पाऊंगी)/u },
+  { id: "hi.zinda_nahi_rehna", category: "passive", pattern: /जिंदा\s+नहीं\s+रहना/u },
   { id: "hi.jeena_nahi_chahta", category: "passive", pattern: /जीना\s+नहीं\s+चाहत/u },
   { id: "hi.zindagi_se_thak", category: "passive", pattern: /जि(ं|न्)दगी\s+(से\s+)?(थक|बेकार|बोझ)/u },
   { id: "hi.sab_khatam_ho", category: "passive", pattern: /सब\s*(कुछ)?\s+खत्म\s+हो\s+(गया|चुका)/u },

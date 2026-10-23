@@ -273,7 +273,7 @@ const en = {
       substances:
         "Using substances or alcohol to cope can quickly worsen mood and sleep cycles. A confidential session with the counselling cell can help explore healthier ways to relieve stress.",
     },
-    notSaved: "You were offline, so this check-in wasn't saved.",
+    notSaved: "We couldn't save this check-in (you may be offline), but your results are below.",
     stateless: "These results are only on this device and disappear when you close the tab.",
     newCheckin: "Do another check-in",
     viewHistory: "See your history",
