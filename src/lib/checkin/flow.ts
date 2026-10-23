@@ -29,7 +29,12 @@ export type CssrsStepId =
   | "cssrs.plan"
   | "cssrs.behaviorEver"
   | "cssrs.behaviorRecent";
-export type CampusStepId = "campus.sleep" | "campus.academics" | "campus.safety";
+export type CampusStepId =
+  | "campus.sleep"
+  | "campus.academics"
+  | "campus.social"
+  | "campus.substances"
+  | "campus.safety";
 export type StepId = `phq9.${number}` | `gad7.${number}` | CssrsStepId | CampusStepId | "deeper" | "freeText";
 
 export type Step =
@@ -54,6 +59,10 @@ export interface CampusAnswers {
   sleep: Answer<Likert4>;
   /** 0 not at all … 3 a lot */
   academics: Answer<Likert4>;
+  /** 0 yes easily … 3 no one / isolated */
+  social?: Answer<Likert4>;
+  /** 0 not at all … 3 nearly every day */
+  substances?: Answer<Likert4>;
   safety: SafetyAnswer | null;
 }
 
@@ -121,7 +130,13 @@ export function sequence(state: FlowState): Step[] {
     if (cssrsDone && scoreCssrs(cssrsAnswers(state)) === "high") return steps;
   }
 
-  steps.push({ id: "campus.sleep", kind: "campus" }, { id: "campus.academics", kind: "campus" }, { id: "campus.safety", kind: "campus" });
+  steps.push(
+    { id: "campus.sleep", kind: "campus" },
+    { id: "campus.academics", kind: "campus" },
+    { id: "campus.social", kind: "campus" },
+    { id: "campus.substances", kind: "campus" },
+    { id: "campus.safety", kind: "campus" },
+  );
 
   const phq2Positive = scorePhq2(phq9Items(state)).band === "positive";
   const gad2Positive = scoreGad2(gad7Items(state)).band === "positive";
@@ -191,6 +206,8 @@ export function toSubmission(state: FlowState): { answers: CheckinAnswers; campu
     campus: {
       sleep: likert(pruned.values["campus.sleep"]),
       academics: likert(pruned.values["campus.academics"]),
+      social: likert(pruned.values["campus.social"]),
+      substances: likert(pruned.values["campus.substances"]),
       safety: safety === "no" || safety === "yes" || safety === "prefer_not" ? safety : null,
     },
   };

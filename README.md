@@ -18,6 +18,18 @@ Local runs need no database server: `DATABASE_URL=pglite:./.data/pglite` runs em
 - **Counsellor:** `counsellor@nitp.ac.in`. **Admin:** `admin@nitp.ac.in`.
 - **Turning on AI notes and chat:** set `LLM_PROVIDER=anthropic` with `ANTHROPIC_API_KEY`, or `LLM_PROVIDER=mock` for offline demos.
 
+## Deploy to a VPS
+
+Docker Compose stack: Caddy (automatic HTTPS) → N stateless app replicas → Postgres, with nightly backups and zero-downtime rolling deploys.
+
+```bash
+ssh root@<vps> 'bash -s' < deploy/scripts/bootstrap-vps.sh          # once: Docker, firewall, deploy user
+deploy/deploy.sh deploy@<vps> aatman.nitp.ac.in you@nitp.ac.in        # once: generates server settings
+deploy/deploy.sh deploy@<vps>                                         # every release
+```
+
+Full runbook, scaling and operations: [docs/deployment.md](docs/deployment.md). Every setting: [deploy/.env.example](deploy/.env.example).
+
 ## Tests
 
 ```bash

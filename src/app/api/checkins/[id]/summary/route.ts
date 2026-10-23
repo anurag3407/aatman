@@ -16,7 +16,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (!checkin) return NextResponse.json({ error: "not_found" }, { status: 404 });
   if (checkin.summary) return NextResponse.json(checkin.summary);
 
-  if (!rateLimit(`summary:${auth.session.sub}`, 20, 60 * 60 * 1000)) {
+  if (!(await rateLimit(`summary:${auth.session.sub}`, 20, 60 * 60 * 1000))) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
   const summary = await summarize(checkin.triage, checkin.campus, checkin.locale);

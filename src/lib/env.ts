@@ -22,6 +22,8 @@ const schema = z.object({
 
   /** `postgres://…` in production; `pglite:memory` or `pglite:<dir>` for local dev and tests. */
   DATABASE_URL: z.string().default("pglite:./.data/pglite"),
+  /** Postgres connections per app instance. Keep instances × this below the server's max_connections. */
+  DATABASE_POOL_MAX: z.coerce.number().int().min(1).max(100).default(10),
 
   SESSION_SECRET: z.string().min(32, "SESSION_SECRET must be at least 32 characters"),
   /** HMAC key that turns an institute email into a pseudonym. Losing it orphans every account; never rotate casually. */

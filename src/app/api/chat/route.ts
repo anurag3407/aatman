@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   const body = await readJson(req, chatBody);
   if (body.error) return body.error;
 
-  if (!rateLimit(`chat:${auth.session.sub}`, 40, 60 * 60 * 1000)) {
+  if (!(await rateLimit(`chat:${auth.session.sub}`, 40, 60 * 60 * 1000))) {
     return NextResponse.json({ type: "limit" }, { status: 429 });
   }
   return NextResponse.json(await reflect(body.data.messages, body.data.locale));

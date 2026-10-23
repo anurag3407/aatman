@@ -38,7 +38,13 @@ async function connect(): Promise<Db> {
 
   const { Pool } = await import("pg");
   const { drizzle } = await import("drizzle-orm/node-postgres");
-  const pool = new Pool({ connectionString: url, max: 10 });
+  const pool = new Pool({
+    connectionString: url,
+    max: env().DATABASE_POOL_MAX,
+    idleTimeoutMillis: 30_000,
+    // Fail fast when Postgres is unreachable, so health checks take the instance out of rotation.
+    connectionTimeoutMillis: 5_000,
+  });
   return drizzle(pool, { schema });
 }
 

@@ -22,6 +22,8 @@ export const checkinBody = z.object({
   campus: z.object({
     sleep: likert4,
     academics: likert4,
+    social: likert4.optional(),
+    substances: likert4.optional(),
     safety: z.enum(["no", "yes", "prefer_not"]).nullable(),
   }),
   locale: z.enum(["en", "hi"]),

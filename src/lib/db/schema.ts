@@ -1,4 +1,4 @@
-import { boolean, index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { bigint, boolean, index, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 /**
  * Privacy model:
@@ -94,4 +94,19 @@ export const auditLog = pgTable(
     targetId: text("target_id"),
   },
   (t) => [index("audit_log_at_idx").on(t.at)],
+);
+
+/**
+ * Fixed-window rate-limit counters, shared by every app instance. Keys are hashed, so a
+ * row doesn't name the student; rows are swept by the daily retention job.
+ */
+export const rateLimits = pgTable(
+  "rate_limits",
+  {
+    key: text("key").primaryKey(),
+    /** Epoch milliseconds. */
+    windowStart: bigint("window_start", { mode: "number" }).notNull(),
+    count: integer("count").notNull(),
+  },
+  (t) => [index("rate_limits_window_idx").on(t.windowStart)],
 );

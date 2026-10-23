@@ -1,0 +1,37 @@
+# HTTPS for {$DOMAIN} with automatic Let's Encrypt certificates, load-balanced over every
+# app replica. No access log: request paths and IPs of students stay off this server.
+{
+	email {$ACME_EMAIL}
+}
+
+{$DOMAIN} {
+	encode zstd gzip
+
+	# The largest legitimate body is a chat transcript; refuse anything bigger at the edge.
+	request_body {
+		max_size 1MB
+	}
+
+	header -Server
+
+	reverse_proxy {
+		# Re-resolve the `app` service every few seconds, so scaled and rolled replicas are
+		# picked up without reloading Caddy.
+		dynamic a {
+			name app
+			port 3000
+			refresh 5s
+		}
+		lb_policy least_conn
+		# A replica that is stopping refuses connections; retry on another instead of erroring.
+		lb_try_duration 10s
+		lb_try_interval 250ms
+		fail_duration 30s
+		max_fails 1
+		unhealthy_status 502 503 504
+		transport http {
+			dial_timeout 3s
+			response_header_timeout 60s
+		}
+	}
+}

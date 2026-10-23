@@ -6,6 +6,7 @@ import { suppress, weeklyTierCounts } from "@/lib/services/aggregates";
 import { bookSlot, cancelBooking, createSlots, getBookingForStaff, listOpenSlots, listStudentBookings } from "@/lib/services/booking";
 import { createCheckin, getCheckin, listCheckins, setKeep } from "@/lib/services/checkins";
 import { createContactRequest, getContactRequestForStaff, listContactRequests } from "@/lib/services/contactRequests";
+import { rateLimit } from "@/lib/services/rateLimit";
 import { runRetention } from "@/lib/services/retention";
 import { eraseStudent, exportStudentData, recordConsent } from "@/lib/services/studentData";
 import type { CheckinAnswers } from "@/lib/safety/triage";
@@ -185,6 +186,33 @@ describe("retention", () => {
     const result = await runRetention(12);
     expect(result.checkins).toBeGreaterThanOrEqual(1);
     expect((await listCheckins(p)).map((c) => c.id).sort()).toEqual([kept.id, fresh.id].sort());
+  });
+});
+
+describe("rate limiting", () => {
+  const hour = 60 * 60 * 1000;
+
+  it("allows up to the limit per window, then starts a fresh window", async () => {
+    const t0 = 1_800_000_000_000;
+    const results = [];
+    for (let i = 0; i < 4; i++) results.push(await rateLimit("test:window", 3, hour, t0 + i));
+    expect(results).toEqual([true, true, true, false]);
+    expect(await rateLimit("test:window", 3, hour, t0 + hour)).toBe(true);
+    expect(await rateLimit("test:other-key", 3, hour, t0)).toBe(true);
+  });
+
+  it("counts concurrent requests atomically", async () => {
+    const now = Date.now();
+    const results = await Promise.all(Array.from({ length: 10 }, () => rateLimit("test:burst", 5, hour, now)));
+    expect(results.filter(Boolean)).toHaveLength(5);
+  });
+
+  it("doesn't store the key in the clear, and retention sweeps old counters", async () => {
+    await rateLimit("chat:visible-pseudonym", 5, hour, Date.now() - 3 * 86_400_000);
+    const db = await getDb();
+    const rows = await db.select().from(schema.rateLimits);
+    expect(JSON.stringify(rows)).not.toContain("visible-pseudonym");
+    expect((await runRetention(12)).rateLimits).toBeGreaterThanOrEqual(1);
   });
 });
 

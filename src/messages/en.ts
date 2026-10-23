@@ -120,12 +120,20 @@ const en = {
     },
     campus: {
       "campus.sleep": {
-        q: "How has your sleep been over the last 2 weeks?",
+        q: "How would you rate your overall sleep quality over the last 2 weeks?",
         options: ["Good", "Okay", "Poor", "Very poor"],
       },
       "campus.academics": {
         q: "How much is academic pressure (exams, assignments, placements) affecting you?",
         options: ["Not at all", "A little", "Quite a bit", "A lot"],
+      },
+      "campus.social": {
+        q: "Do you have friends, peers, or family you feel comfortable confiding in?",
+        options: ["Yes, easily", "Usually", "Rarely", "No one, feeling isolated"],
+      },
+      "campus.substances": {
+        q: "Over the last 2 weeks, how often have you used alcohol, smoking, or substances to cope with stress or sleep?",
+        options: ["Not at all", "A few times", "Several days", "Nearly every day"],
       },
       "campus.safety": {
         q: "Recently, have you felt unsafe, harassed or ragged on campus or in the hostel?",
@@ -249,6 +257,10 @@ const en = {
         "You mentioned sleep has been rough. A fixed wake-up time, less screen time in the hour before bed, and no caffeine after 4 pm are small changes that often help.",
       academics:
         "Academic pressure came up as a big factor. Working in 25-minute blocks, and talking to a faculty advisor or a senior you trust about your workload, can make it feel more manageable.",
+      social:
+        "Feeling isolated or having no one to confide in makes challenges harder. Connecting with a club, a trusted classmate, or the campus counsellor can help build your support circle.",
+      substances:
+        "Using substances or alcohol to cope can quickly worsen mood and sleep cycles. A confidential session with the counselling cell can help explore healthier ways to relieve stress.",
     },
     notSaved: "You were offline, so this check-in wasn't saved.",
     stateless: "These results are only on this device and disappear when you close the tab.",

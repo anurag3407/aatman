@@ -68,6 +68,8 @@ test("free text with crisis language escalates even when every answer is low", a
   await answerTier1(page, "Not at all");
   await choose(page, "Good");
   await choose(page, "Not at all");
+  await choose(page, "Yes, easily");
+  await choose(page, "Not at all");
   await choose(page, "No");
   await page.getByRole("textbox").fill("sab khatam kar dunga");
   await page.getByRole("button", { name: "Continue" }).click();
@@ -84,6 +86,8 @@ test("positive PHQ-2 offers the deeper check and scores the full PHQ-9", async (
   await choose(page, "Not at all"); // item 9
   await choose(page, "Poor");
   await choose(page, "Quite a bit");
+  await choose(page, "Yes, easily");
+  await choose(page, "Not at all");
   await choose(page, "No");
   await expect(page.getByRole("heading", { name: "Would you like a deeper 3-minute check?" })).toBeVisible();
   await choose(page, "Yes, continue");
@@ -114,7 +118,7 @@ test("under-18 mode never sends answers to the server", async ({ page }) => {
 });
 
 test("the API refuses unauthenticated and cross-site writes", async ({ request, baseURL }) => {
-  const body = { answers: { phq9: Array(9).fill(0), gad7: Array(7).fill(0) }, campus: { sleep: 0, academics: 0, safety: "no" }, locale: "en" };
+  const body = { answers: { phq9: Array(9).fill(0), gad7: Array(7).fill(0) }, campus: { sleep: 0, academics: 0, social: 0, substances: 0, safety: "no" }, locale: "en" };
   const anon = await request.post("/api/checkins", { data: body, headers: { origin: baseURL! } });
   expect(anon.status()).toBe(401);
   const crossSite = await request.post("/api/checkins", { data: body, headers: { origin: "https://evil.example" } });

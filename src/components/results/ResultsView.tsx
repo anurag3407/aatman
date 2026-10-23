@@ -161,6 +161,8 @@ function Tips({ m, campus }: { m: Messages; campus: CampusAnswers }) {
   const tips = [
     ...((campus.sleep ?? 0) >= 2 ? [m.results.tips.sleep] : []),
     ...((campus.academics ?? 0) >= 2 ? [m.results.tips.academics] : []),
+    ...((campus.social ?? 0) >= 2 ? [m.results.tips.social] : []),
+    ...((campus.substances ?? 0) >= 2 ? [m.results.tips.substances] : []),
   ];
   if (!tips.length) return null;
   return (

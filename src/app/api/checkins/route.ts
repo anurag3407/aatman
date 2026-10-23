@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   if (!isSameOrigin(req)) return forbiddenOrigin();
   const auth = await requireApi(["student"], { consent: true });
   if (auth.error) return auth.error;
-  if (!rateLimit(`checkin:${auth.session.sub}`, 10, 60 * 60 * 1000)) {
+  if (!(await rateLimit(`checkin:${auth.session.sub}`, 10, 60 * 60 * 1000))) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
 

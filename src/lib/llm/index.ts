@@ -87,6 +87,8 @@ export async function summarize(
           worryLevel,
           sleepDifficult: (campus.sleep ?? 0) >= 2,
           academicPressureHigh: (campus.academics ?? 0) >= 2,
+          socialSupportLow: (campus.social ?? 0) >= 2,
+          substanceCopingReported: (campus.substances ?? 0) >= 2,
         }),
       },
     ],

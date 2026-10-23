@@ -1,0 +1,558 @@
+{
+  "id": "acf1f594-ae4d-4e3b-9846-9087ab734fa7",
+  "prevId": "0c364d5a-1993-4212-a6fa-60dc45b41142",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.audit_log": {
+      "name": "audit_log",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "at": {
+          "name": "at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "actor": {
+          "name": "actor",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "action": {
+          "name": "action",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target_type": {
+          "name": "target_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "target_id": {
+          "name": "target_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "audit_log_at_idx": {
+          "name": "audit_log_at_idx",
+          "columns": [
+            {
+              "expression": "at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.checkins": {
+      "name": "checkins",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "pseudonym": {
+          "name": "pseudonym",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "tier": {
+          "name": "tier",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payload_enc": {
+          "name": "payload_enc",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "summary_enc": {
+          "name": "summary_enc",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "summary_source": {
+          "name": "summary_source",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "keep": {
+          "name": "keep",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        }
+      },
+      "indexes": {
+        "checkins_owner_idx": {
+          "name": "checkins_owner_idx",
+          "columns": [
+            {
+              "expression": "pseudonym",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "checkins_created_idx": {
+          "name": "checkins_created_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "checkins_pseudonym_students_pseudonym_fk": {
+          "name": "checkins_pseudonym_students_pseudonym_fk",
+          "tableFrom": "checkins",
+          "tableTo": "students",
+          "columnsFrom": [
+            "pseudonym"
+          ],
+          "columnsTo": [
+            "pseudonym"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.contact_requests": {
+      "name": "contact_requests",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "pseudonym": {
+          "name": "pseudonym",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "checkin_id": {
+          "name": "checkin_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "tier": {
+          "name": "tier",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "contact_enc": {
+          "name": "contact_enc",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'new'"
+        },
+        "handled_by": {
+          "name": "handled_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contacted_at": {
+          "name": "contacted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "closed_at": {
+          "name": "closed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "contact_requests_status_idx": {
+          "name": "contact_requests_status_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "contact_requests_pseudonym_students_pseudonym_fk": {
+          "name": "contact_requests_pseudonym_students_pseudonym_fk",
+          "tableFrom": "contact_requests",
+          "tableTo": "students",
+          "columnsFrom": [
+            "pseudonym"
+          ],
+          "columnsTo": [
+            "pseudonym"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "contact_requests_checkin_id_checkins_id_fk": {
+          "name": "contact_requests_checkin_id_checkins_id_fk",
+          "tableFrom": "contact_requests",
+          "tableTo": "checkins",
+          "columnsFrom": [
+            "checkin_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.rate_limits": {
+      "name": "rate_limits",
+      "schema": "",
+      "columns": {
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "window_start": {
+          "name": "window_start",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "count": {
+          "name": "count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "rate_limits_window_idx": {
+          "name": "rate_limits_window_idx",
+          "columns": [
+            {
+              "expression": "window_start",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.slots": {
+      "name": "slots",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "counsellor_email": {
+          "name": "counsellor_email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "starts_at": {
+          "name": "starts_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ends_at": {
+          "name": "ends_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "location": {
+          "name": "location",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mode": {
+          "name": "mode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'in_person'"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'open'"
+        },
+        "booked_by": {
+          "name": "booked_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "booked_at": {
+          "name": "booked_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "shared_checkin_id": {
+          "name": "shared_checkin_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contact_enc": {
+          "name": "contact_enc",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "slots_time_idx": {
+          "name": "slots_time_idx",
+          "columns": [
+            {
+              "expression": "starts_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "slots_booker_idx": {
+          "name": "slots_booker_idx",
+          "columns": [
+            {
+              "expression": "booked_by",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "slots_booked_by_students_pseudonym_fk": {
+          "name": "slots_booked_by_students_pseudonym_fk",
+          "tableFrom": "slots",
+          "tableTo": "students",
+          "columnsFrom": [
+            "booked_by"
+          ],
+          "columnsTo": [
+            "pseudonym"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "slots_shared_checkin_id_checkins_id_fk": {
+          "name": "slots_shared_checkin_id_checkins_id_fk",
+          "tableFrom": "slots",
+          "tableTo": "checkins",
+          "columnsFrom": [
+            "shared_checkin_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.students": {
+      "name": "students",
+      "schema": "",
+      "columns": {
+        "pseudonym": {
+          "name": "pseudonym",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "consent_version": {
+          "name": "consent_version",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "consent_at": {
+          "name": "consent_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

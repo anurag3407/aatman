@@ -36,6 +36,8 @@ export async function answerTier1(page: Page, item9: string) {
 export async function finishCampusAndSubmit(page: Page) {
   await choose(page, "Good");
   await choose(page, "Not at all");
+  await choose(page, "Yes, easily");
+  await choose(page, "Not at all");
   await choose(page, "No");
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("button", { name: "See my results" }).click();

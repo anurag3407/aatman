@@ -1,0 +1,167 @@
+# Aatman on a single VPS: Caddy (HTTPS) → N stateless app replicas → Postgres.
+# Driven by deploy/scripts/release.sh; see docs/deployment.md. Settings live in deploy/.env
+# (a symlink to /opt/aatman/shared/.env on the server), which Compose reads for ${…} below.
+name: aatman
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+x-hardening: &hardening
+  security_opt: ["no-new-privileges:true"]
+  logging: *logging
+
+services:
+  caddy:
+    <<: *hardening
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp" # HTTP/3
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN in deploy/.env}
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL in deploy/.env}
+    volumes:
+      # CONFIG_DIR is a stable copy (release.sh), so a new release doesn't recreate Caddy.
+      - ${CONFIG_DIR:-.}/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data # TLS certificates; keep across deploys to avoid Let's Encrypt rate limits
+      - caddy_config:/config
+    networks: [edge]
+
+  app:
+    <<: *hardening
+    image: aatman-app:${RELEASE:-dev}
+    build:
+      context: ..
+      target: run
+      args:
+        NEXT_DEPLOYMENT_ID: ${RELEASE:-dev}
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /app/.next/cache
+    cap_drop: [ALL]
+    # Next.js drains in-flight requests on SIGTERM.
+    stop_grace_period: 30s
+    deploy:
+      replicas: ${APP_REPLICAS:-2}
+      resources:
+        limits:
+          memory: ${APP_MEMORY_LIMIT:-768m}
+          cpus: "${APP_CPU_LIMIT:-1.0}"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: false # absent when DATABASE_URL points at a managed Postgres
+    networks: [edge, db]
+
+  # One-shot: `docker compose run --rm migrate`. release.sh runs it before rolling the app.
+  migrate:
+    <<: *hardening
+    image: aatman-migrate:${RELEASE:-dev}
+    build:
+      context: ..
+      target: migrate
+    profiles: [tools]
+    restart: "no"
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?set DATABASE_URL in deploy/.env}
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: false
+    networks: [db, egress]
+
+  # Daily retention run and Postgres backups (busybox crond inside the Postgres image, for pg_dump).
+  cron:
+    <<: *hardening
+    image: postgres:17-alpine
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "/opt/cron/entrypoint.sh"]
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      CRON_SECRET: ${CRON_SECRET:?set CRON_SECRET in deploy/.env}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+      RETENTION_SCHEDULE: ${RETENTION_SCHEDULE:-30 21 * * *} # 03:00 IST
+      BACKUP_SCHEDULE: ${BACKUP_SCHEDULE:-0 21 * * *} # 02:30 IST
+    volumes:
+      - ${CONFIG_DIR:-.}/cron:/opt/cron:ro
+      - ${BACKUP_DIR:-/opt/aatman/backups}:/backups
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: false
+    networks: [edge, db]
+
+  # Bundled Postgres, enabled by COMPOSE_PROFILES=db. Never published to the host or internet.
+  postgres:
+    <<: *hardening
+    image: postgres:17-alpine
+    profiles: [db]
+    restart: unless-stopped
+    shm_size: 256mb
+    environment:
+      POSTGRES_DB: aatman
+      POSTGRES_USER: aatman
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in deploy/.env}
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    command:
+      - postgres
+      - -c
+      - max_connections=${PG_MAX_CONNECTIONS:-100}
+      - -c
+      - shared_buffers=${PG_SHARED_BUFFERS:-256MB}
+      - -c
+      - effective_cache_size=${PG_EFFECTIVE_CACHE_SIZE:-768MB}
+      - -c
+      - work_mem=${PG_WORK_MEM:-4MB}
+      - -c
+      - maintenance_work_mem=${PG_MAINTENANCE_WORK_MEM:-64MB}
+      - -c
+      - idle_in_transaction_session_timeout=60s
+      # Never write statement text to the logs: it can reference student records.
+      - -c
+      - log_min_error_statement=panic
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aatman -d aatman"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          memory: ${PG_MEMORY_LIMIT:-1g}
+    networks: [db]
+
+networks:
+  # Internet-facing: Caddy ↔ app, plus app egress (SSO token exchange, LLM API).
+  edge:
+  # Database traffic only; no route to the internet.
+  db:
+    internal: true
+  # Migrations may need to reach a managed Postgres outside this host.
+  egress:
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

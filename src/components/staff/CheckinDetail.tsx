@@ -71,6 +71,8 @@ export function CheckinDetail({ checkin }: { checkin: CheckinRecord }) {
         <ul className="mt-2 flex flex-col gap-1">
           <li>Sleep: {campus.sleep === null ? "skipped" : en.checkin.campus["campus.sleep"].options[campus.sleep]}</li>
           <li>Academic pressure: {campus.academics === null ? "skipped" : en.checkin.campus["campus.academics"].options[campus.academics]}</li>
+          <li>Confidant / social support: {campus.social == null ? "skipped" : en.checkin.campus["campus.social"].options[campus.social]}</li>
+          <li>Substance / coping use: {campus.substances == null ? "skipped" : en.checkin.campus["campus.substances"].options[campus.substances]}</li>
           <li>Felt unsafe / ragged: {campus.safety === null ? "skipped" : en.checkin.campus["campus.safety"].options[campus.safety]}</li>
         </ul>
       </details>

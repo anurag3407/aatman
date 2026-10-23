@@ -38,6 +38,8 @@ describe("check-in sequence", () => {
       "phq9.8",
       "campus.sleep",
       "campus.academics",
+      "campus.social",
+      "campus.substances",
       "campus.safety",
       "freeText",
     ]);
@@ -88,7 +90,7 @@ describe("check-in sequence", () => {
 
   it("progress counts answered steps of the live sequence", () => {
     const s = answer(answer(EMPTY_FLOW, "phq9.0", 1), "phq9.1", 1);
-    expect(progress(s)).toEqual({ done: 2, total: 9 });
+    expect(progress(s)).toEqual({ done: 2, total: 11 });
   });
 });
 
@@ -123,7 +125,7 @@ describe("toSubmission", () => {
   it("includes trimmed free text and campus answers", () => {
     const { answers, campus } = toSubmission(run({ freeText: "  exam stress  ", "campus.sleep": 3, "campus.safety": "yes" }));
     expect(answers.freeText).toEqual(["exam stress"]);
-    expect(campus).toEqual({ sleep: 3, academics: 0, safety: "yes" });
+    expect(campus).toEqual({ sleep: 3, academics: 0, social: 0, substances: 0, safety: "yes" });
   });
 
   it("free-text crisis language escalates the tier", () => {

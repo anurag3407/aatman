@@ -42,6 +42,8 @@ export function summaryUserMessage(input: {
   worryLevel: string | null;
   sleepDifficult: boolean;
   academicPressureHigh: boolean;
+  socialSupportLow?: boolean;
+  substanceCopingReported?: boolean;
 }): string {
   return JSON.stringify(input);
 }
