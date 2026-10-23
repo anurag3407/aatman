@@ -35,8 +35,9 @@ export async function createSessionFor(
 }
 
 /** Redirect after login, setting the session cookie and clearing the one-time consent cookie. */
-export async function loginRedirect(session: Session, path: string): Promise<NextResponse> {
-  const res = NextResponse.redirect(new URL(path, env().APP_URL), 303);
+export async function loginRedirect(session: Session, path: string, host?: string): Promise<NextResponse> {
+  const base = host ? (host.startsWith("http") ? host : `https://${host}`) : env().APP_URL;
+  const res = NextResponse.redirect(new URL(path, base), 303);
   res.cookies.set(SESSION_COOKIE, await signSession(session), sessionCookieOptions());
   res.cookies.delete(CONSENT_COOKIE);
   return res;

@@ -35,8 +35,9 @@ function configFor(provider: Provider): Promise<oidc.Configuration> {
   return cfg;
 }
 
-export function redirectUri(provider: Provider): string {
-  return new URL(`/api/auth/callback/${provider}`, env().APP_URL).toString();
+export function redirectUri(provider: Provider, host?: string): string {
+  const base = host ? (host.startsWith("http") ? host : `https://${host}`) : env().APP_URL;
+  return new URL(`/api/auth/callback/${provider}`, base).toString();
 }
 
 export interface PendingLogin {
@@ -46,13 +47,13 @@ export interface PendingLogin {
   nonce: string;
 }
 
-export async function beginLogin(provider: Provider): Promise<{ url: URL; pending: PendingLogin }> {
+export async function beginLogin(provider: Provider, host?: string): Promise<{ url: URL; pending: PendingLogin }> {
   const config = await configFor(provider);
   const verifier = oidc.randomPKCECodeVerifier();
   const state = oidc.randomState();
   const nonce = oidc.randomNonce();
   const params: Record<string, string> = {
-    redirect_uri: redirectUri(provider),
+    redirect_uri: redirectUri(provider, host),
     scope: "openid email profile",
     code_challenge: await oidc.calculatePKCECodeChallenge(verifier),
     code_challenge_method: "S256",

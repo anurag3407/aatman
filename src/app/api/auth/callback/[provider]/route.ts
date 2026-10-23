@@ -14,8 +14,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ prov
   const pending = (await verifyTemp(req.cookies.get(OIDC_COOKIE)?.value)) as PendingLogin | null;
   if (!pending || pending.provider !== provider) return redirectTo("/signin?error=failed");
 
-  // Rebuild the callback URL from APP_URL: behind a proxy, req.url may hold the internal host.
-  const callbackUrl = new URL(`/api/auth/callback/${provider}${req.nextUrl.search}`, env().APP_URL);
+  // Rebuild the callback URL: match incoming host header or fall back to APP_URL
+  const host = req.headers.get("x-forwarded-host") || req.headers.get("host");
+  const base = host ? (host.startsWith("http") ? host : `https://${host}`) : env().APP_URL;
+  const callbackUrl = new URL(`/api/auth/callback/${provider}${req.nextUrl.search}`, base);
 
   try {
     const claims = await finishLogin(pending, callbackUrl);
@@ -31,7 +33,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ prov
     const session = await createSessionFor(identity.email, identity.role, {
       consentVersion: req.cookies.get(CONSENT_COOKIE)?.value,
     });
-    const res = await loginRedirect(session, landingPathFor(session.role));
+    const res = await loginRedirect(session, landingPathFor(session.role), host ?? undefined);
     res.cookies.delete({ name: OIDC_COOKIE, path: "/api/auth/callback" });
     return res;
   } catch (err) {

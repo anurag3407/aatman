@@ -6,12 +6,13 @@ import { redirectTo } from "@/lib/http";
 
 const OIDC_COOKIE = "aat_o";
 
-export async function GET(_req: NextRequest, { params }: { params: Promise<{ provider: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ provider: string }> }) {
   const { provider } = await params;
   if (provider !== "google" && provider !== "microsoft") return redirectTo("/signin?error=failed");
 
   try {
-    const { url, pending } = await beginLogin(provider);
+    const host = req.headers.get("x-forwarded-host") || req.headers.get("host");
+    const { url, pending } = await beginLogin(provider, host ?? undefined);
     const res = NextResponse.redirect(url);
     res.cookies.set(OIDC_COOKIE, await signTemp({ ...pending }, 600), {
       httpOnly: true,
