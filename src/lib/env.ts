@@ -43,6 +43,15 @@ const schema = z.object({
 
   COUNSELLOR_EMAILS: list,
   ADMIN_EMAILS: list,
+  /** Fallback recipients when no on-call shift covers the moment. Also the backup escalation target. */
+  ALERT_EMAILS: list,
+  CLINICAL_LEAD_EMAILS: list,
+  /** Generic email transport: POST { to, subject, text } with an optional bearer token. */
+  NOTIFY_WEBHOOK_URL: z.url().optional(),
+  NOTIFY_WEBHOOK_TOKEN: z.string().optional(),
+  /** SMS transport for appointment reminders. Receives POST { to, text }. */
+  SMS_WEBHOOK_URL: z.url().optional(),
+  SMS_WEBHOOK_TOKEN: z.string().optional(),
 
   /** Sign in as any test email without SSO. Never allowed in production. */
   DEV_LOGIN: z

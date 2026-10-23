@@ -14,7 +14,7 @@ Aatman runs on a single VPS with Docker Compose, and scales out from there witho
  └───┬───┘ └───┬───┘ └───┬───┘
      └─────────┼─────────┘   internal network: no route to the internet
         ┌──────▼──────┐   ┌──────┐
-        │  Postgres   │◄──┤ cron │  retention 03:00 IST, pg_dump 02:30 IST → /opt/aatman/backups
+        │  Postgres   │◄──┤ cron │  alerts every minute, retention 03:00 IST, pg_dump 02:30 IST
         └─────────────┘   └──────┘
 ```
 
@@ -107,7 +107,9 @@ docker compose run --rm migrate           # apply migrations by hand
 - **Restore**: `scripts/restore.sh /opt/aatman/backups/aatman-<stamp>.dump` (asks before replacing data). Test a restore before launch.
 - **Retention** runs daily via the cron container. To run it now:
   `docker compose exec cron sh -c '. /run/cron.env; sh /opt/cron/retention.sh'`.
-- **Monitoring**: an external uptime check on `https://<domain>/api/health` (UptimeRobot, Better Stack…). It returns 503 if the database is unreachable.
+- **Crisis alerting**: the cron container calls `/api/cron/alerts` every minute. That run escalates unacknowledged crisis/urgent alerts and sends appointment reminders. Set `ALERT_EMAILS` (fallback recipients), `CLINICAL_LEAD_EMAILS`, `NOTIFY_WEBHOOK_URL` (email transport) and, for reminders, `SMS_WEBHOOK_URL`. Create on-call shifts in **Staff → Alerts**. Without an email transport, alerts still appear on that page but nobody is paged; the page shows a warning.
+  Test it now: `docker compose exec cron sh -c '. /run/cron.env; sh /opt/cron/alerts.sh'` and check the cron logs.
+- **Monitoring**: an external uptime check on `https://<domain>/api/health` (UptimeRobot, Better Stack…). It returns 503 if the database is unreachable. Add a second check that alerts if `/api/cron/alerts` has not succeeded in 5 minutes.
 - **TLS** certificates renew automatically; they live in the `caddy_data` volume.
 - **Logs** contain error types and status codes only, never request bodies, answers or chat text. Caddy writes no access log and Postgres never logs statement text. Keep it that way: don't add request logging.
 
@@ -141,6 +143,7 @@ docker build --target migrate -t aatman-migrate .         # migrations
 docker run --rm --env-file prod.env aatman-migrate        # release step, before rollout
 docker run -d -p 3000:3000 --env-file prod.env aatman
 curl -fsS -X POST -H "Authorization: Bearer $CRON_SECRET" https://<domain>/api/cron/retention   # daily
+curl -fsS -X POST -H "Authorization: Bearer $CRON_SECRET" https://<domain>/api/cron/alerts      # every minute
 ```
 
 The service worker (`public/sw.js`) only caches `/crisis`, the exercise pages and static assets. Bump `CACHE` in it when changing caching behaviour.

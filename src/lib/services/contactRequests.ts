@@ -1,5 +1,5 @@
 import "server-only";
-import { and, desc, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import { getDb, schema } from "@/lib/db";
 import { seal, unseal } from "@/lib/privacy/server";
 import { recordAudit } from "./audit";
@@ -39,6 +39,18 @@ export async function createContactRequest(
     .insert(schema.contactRequests)
     .values({ pseudonym, checkinId: checkin.id, tier: checkin.triage.tier, contactEnc: seal(contact, pseudonym) })
     .returning({ id: schema.contactRequests.id });
+
+  // If a crisis/urgent alert is open, point it at the callback details the student just shared.
+  await db
+    .update(schema.crisisAlerts)
+    .set({ contactRequestId: row.id })
+    .where(
+      and(
+        eq(schema.crisisAlerts.pseudonym, pseudonym),
+        isNull(schema.crisisAlerts.contactRequestId),
+        inArray(schema.crisisAlerts.status, ["open", "acknowledged"]),
+      ),
+    );
   return { ok: true, id: row.id };
 }
 

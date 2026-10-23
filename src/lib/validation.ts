@@ -49,7 +49,10 @@ export const contactBody = z
 export const bookBody = z.object({
   share: z.boolean(),
   phone: phone.optional().or(z.literal("")),
+  remind: z.boolean().optional(),
 });
+
+export const rescheduleBody = z.object({ newSlotId: z.uuid() });
 
 export const chatBody = z.object({
   messages: z

@@ -17,7 +17,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   const result = await bookSlot(auth.session.sub, id, {
     shareLatestCheckin: body.data.share,
     phone: body.data.phone || undefined,
+    reminderOptIn: body.data.remind,
   });
-  if (!result.ok) return NextResponse.json({ error: result.error }, { status: 409 });
+  if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.error === "not_eligible" ? 403 : 409 });
   return NextResponse.json({ ok: true });
 }

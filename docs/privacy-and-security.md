@@ -14,6 +14,10 @@ A short data-protection overview for the DPO and ethics committee.
 | Contact request details (name, phone, email, best time) | Yes, if the student sends one | Encrypted | Counsellors (each view audit-logged) | Deleted 12 months after closing, or on erasure |
 | Booking | Yes | Phone encrypted; check-in link only if shared | Counsellors | 12 months after the session |
 | Audit log | Yes | Actor, action, record id (no content) | Operators | 36 months |
+| Crisis alert | Yes | Pseudonym, tier, timestamps, resolution note (encrypted) | On-call counsellors; clinical lead for escalations; every view audited | 12 months after resolution |
+| Notification outbox | Yes | Staff email, opaque alert id, no student data | Operators | 30 days after sent/dead |
+| Counsellor profile | Yes | Staff name, languages, bio | Students (public directory) | Until removed |
+| Appointment reminder | No new row | Phone decrypted in memory from the booking, used once, never written to the outbox | Nobody | Not stored |
 | Staff email | In session cookie and audit log | Plain | Operators | Audit retention |
 
 ## Controls
@@ -26,6 +30,8 @@ A short data-protection overview for the DPO and ethics committee.
 - **Rights:** export (`/api/me/export`) and erasure (`DELETE /api/me`, which cascades and frees future bookings) are in Settings.
 - **Minors:** under-18 mode creates no account, sends nothing, and keeps results only in the tab's sessionStorage.
 - **Device privacy:** Quick exit (button, or Escape pressed twice) clears drafts and replaces the history entry. Reminders are calendar files titled "Check-in". The app name and manifest are neutral.
+- **Alerting:** crisis/urgent alerts and their emails contain only an opaque id and severity, never answers, scores or contact details. Opening an alert is audited. The counsellor only sees callback details if the student separately sent a contact request.
+- **SMS reminders:** the phone number stays encrypted at rest and is decrypted in memory per send. The message says "your appointment", never the app name, counsellor, location or clinical reason.
 
 ## Known limits
 

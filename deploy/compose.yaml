@@ -98,9 +98,11 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL}
       CRON_SECRET: ${CRON_SECRET:?set CRON_SECRET in deploy/.env}
+      APP_URL: ${APP_URL:?set APP_URL in deploy/.env}
       BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
       RETENTION_SCHEDULE: ${RETENTION_SCHEDULE:-30 21 * * *} # 03:00 IST
       BACKUP_SCHEDULE: ${BACKUP_SCHEDULE:-0 21 * * *} # 02:30 IST
+      ALERT_SCHEDULE: ${ALERT_SCHEDULE:-* * * * *}
     volumes:
       - ${CONFIG_DIR:-.}/cron:/opt/cron:ro
       - ${BACKUP_DIR:-/opt/aatman/backups}:/backups

@@ -22,6 +22,8 @@ export default async function AdminDashboard() {
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat label="Slots offered (28 days)" value={show(stats.slotsOffered)} />
         <Stat label="Slots booked (28 days)" value={show(stats.slotsBooked)} />
+        <Stat label="Sessions attended (28 days)" value={show(stats.sessionsAttended)} />
+        <Stat label="No-shows (28 days)" value={show(stats.sessionsNoShow)} />
         <Stat label="Contact requests (28 days)" value={show(stats.contactRequests)} />
         <Stat
           label="Median hours to first contact"

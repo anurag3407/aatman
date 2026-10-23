@@ -3,16 +3,17 @@ import { ContactForm } from "@/components/ContactForm";
 import { Page, PageTitle } from "@/components/ui";
 import { requireStudentPage } from "@/lib/auth/guards";
 import { getMessages } from "@/lib/i18n/server";
+import { tierRank } from "@/lib/safety/triage";
 import { listOpenSlots, listStudentBookings } from "@/lib/services/booking";
 import { latestCheckin } from "@/lib/services/checkins";
 
 export default async function BookPage() {
   const session = await requireStudentPage();
-  const [{ m }, open, mine, latest] = await Promise.all([
-    getMessages(),
-    listOpenSlots(),
+  const [{ m }, latest] = await Promise.all([getMessages(), latestCheckin(session.sub)]);
+  const includeUrgent = latest ? tierRank(latest.triage.tier) >= tierRank("elevated") : false;
+  const [open, mine] = await Promise.all([
+    listOpenSlots(new Date(), { includeUrgent }),
     listStudentBookings(session.sub),
-    latestCheckin(session.sub),
   ]);
 
   const serialize = <T extends { startsAt: Date; endsAt: Date }>(s: T) => ({

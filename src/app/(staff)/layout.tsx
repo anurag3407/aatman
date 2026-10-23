@@ -1,18 +1,21 @@
 import Link from "next/link";
 import { CompanionMark } from "@/components/Companion";
 import { requireStaffPage } from "@/lib/auth/guards";
+import { countOpenAlerts } from "@/lib/services/alerts";
 
 export const metadata = { title: "Aatman · Staff" };
 
 export default async function StaffLayout({ children }: LayoutProps<"/">) {
   const session = await requireStaffPage();
+  const alertCount = session.role === "counsellor" ? await countOpenAlerts() : 0;
   const links =
     session.role === "admin"
-      ? [{ href: "/admin", label: "Dashboard" }]
+      ? [{ href: "/admin", label: "Dashboard", urgent: false }]
       : [
-          { href: "/counsellor", label: "Requests & sessions" },
-          { href: "/counsellor/slots", label: "Slots" },
-          { href: "/admin", label: "Dashboard" },
+          { href: "/counsellor", label: "Requests & sessions", urgent: false },
+          { href: "/counsellor/alerts", label: alertCount ? `Alerts (${alertCount})` : "Alerts", urgent: alertCount > 0 },
+          { href: "/counsellor/slots", label: "Slots", urgent: false },
+          { href: "/admin", label: "Dashboard", urgent: false },
         ];
 
   return (
@@ -30,7 +33,9 @@ export default async function StaffLayout({ children }: LayoutProps<"/">) {
               <Link
                 key={l.href}
                 href={l.href}
-                className="rounded-full px-3 py-2 transition duration-300 hover:bg-surface/80 hover:text-foreground"
+                className={`rounded-full px-3 py-2 transition duration-300 hover:bg-surface/80 hover:text-foreground ${
+                  l.urgent ? "bg-urgent text-urgent-foreground hover:brightness-105" : ""
+                }`}
               >
                 {l.label}
               </Link>

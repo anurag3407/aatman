@@ -83,6 +83,8 @@ export async function weeklyTierCounts(weeks = 12, now = new Date()): Promise<We
 export interface ServiceStats {
   slotsOffered: Cell;
   slotsBooked: Cell;
+  sessionsAttended: Cell;
+  sessionsNoShow: Cell;
   contactRequests: Cell;
   /** Median hours from request to first contact, over requests that have been contacted. */
   medianHoursToContact: number | null;
@@ -96,6 +98,8 @@ export async function serviceStats(days = 28, now = new Date()): Promise<Service
     .select({
       offered: sql<number>`count(*)::int`,
       booked: sql<number>`count(*) filter (where ${schema.slots.status} = 'booked')::int`,
+      attended: sql<number>`count(*) filter (where ${schema.slots.attendedAt} is not null)::int`,
+      noShow: sql<number>`count(*) filter (where ${schema.slots.noShowAt} is not null)::int`,
     })
     .from(schema.slots)
     .where(and(gte(schema.slots.startsAt, since), sql`${schema.slots.startsAt} <= ${now}`));
@@ -116,6 +120,8 @@ export async function serviceStats(days = 28, now = new Date()): Promise<Service
   return {
     slotsOffered: slots.offered,
     slotsBooked: slots.booked,
+    sessionsAttended: suppressTotal(slots.attended),
+    sessionsNoShow: suppressTotal(slots.noShow),
     contactRequests: suppressTotal(requests.n),
     // A median over fewer than K_MIN requests could describe one person's experience.
     medianHoursToContact: median.n >= K_MIN && median.hours !== null ? Math.round(Number(median.hours) * 10) / 10 : null,

@@ -6,6 +6,7 @@ import type { Locale } from "@/lib/i18n";
 import type { Summary } from "@/lib/llm";
 import { seal, unseal } from "@/lib/privacy/server";
 import { triage, type CheckinAnswers, type TriageResult } from "@/lib/safety/triage";
+import { alertNotification, getAlertRecipients, type AlertTier } from "./alerts";
 
 /** What's encrypted per check-in. Free text is never in here: it's scanned, then dropped. */
 export interface CheckinPayload {
@@ -41,12 +42,36 @@ export async function createCheckin(
   const { freeText, ...answers } = input.answers;
   const payload: CheckinPayload = { answers, campus: input.campus, triage: result, locale: input.locale };
 
+  const alertTier: AlertTier | null = result.tier === "crisis" || result.tier === "urgent" ? result.tier : null;
+  const recipients = alertTier ? await getAlertRecipients() : [];
+
   const db = await getDb();
-  const [row] = await db
-    .insert(schema.checkins)
-    .values({ pseudonym, tier: result.tier, payloadEnc: seal(payload, pseudonym) })
-    .returning({ id: schema.checkins.id, createdAt: schema.checkins.createdAt });
-  return { ...row, triage: result };
+  return db.transaction(async (tx) => {
+    const [row] = await tx
+      .insert(schema.checkins)
+      .values({ pseudonym, tier: result.tier, payloadEnc: seal(payload, pseudonym) })
+      .returning({ id: schema.checkins.id, createdAt: schema.checkins.createdAt });
+
+    if (alertTier) {
+      const [alert] = await tx
+        .insert(schema.crisisAlerts)
+        .values({ pseudonym, checkinId: row.id, tier: alertTier })
+        .returning({ id: schema.crisisAlerts.id });
+      if (recipients.length) {
+        const message = alertNotification(alert.id, alertTier);
+        await tx.insert(schema.notificationOutbox).values(
+          recipients.map((toEmail) => ({
+            kind: "crisis_alert" as const,
+            toEmail,
+            subject: message.subject,
+            body: message.body,
+          })),
+        );
+      }
+    }
+
+    return { ...row, triage: result };
+  });
 }
 
 type CheckinRow = typeof schema.checkins.$inferSelect;

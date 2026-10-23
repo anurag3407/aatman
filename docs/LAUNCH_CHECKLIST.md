@@ -14,6 +14,8 @@ The software is built and tested. Launch is gated on the items below, which need
 | C5 | Approve all result headings, templates, crisis copy and both LLM system prompts (`src/messages/*.ts` → `templates`, `results`; `src/lib/llm/prompts.ts`) | Clinical lead | ☐ |
 | C6 | Write the **escalation SOP**: who works the contact-request queue, target response time per tier (e.g. crisis same working day), what happens at night, on weekends and in holidays (default: Tele-MANAS), and how to escalate to the medical officer | Counselling cell | ☐ |
 | C7 | Decide on C-SSRS training for counsellors who will read shared C-SSRS answers | Clinical lead | ☐ |
+| C8 | Staff the **on-call rota** for crisis/urgent alerts in Staff → Alerts; name a backup and the clinical lead for escalation | Counselling cell | ☐ |
+| C9 | Run a **tabletop drill**: crisis check-in → alert → acknowledge → callback → resolve, including the 10/20/30-minute escalation path | Clinical lead + IT | ☐ |
 
 ## 🔴 Legal and privacy (blocking)
 
@@ -40,6 +42,9 @@ The software is built and tested. Launch is gated on the items below, which need
 | I8 | Serve over HTTPS on an institute domain; run `pnpm db:migrate` as a release step | IT | ☐ |
 | I9 | Uptime monitor on `/api/health`; alert the on-call contact | IT | ☐ |
 | I10 | Set `HOSTEL_NAMES` so hostel names are scrubbed from chat text | IT | ☐ |
+| I11 | Set `ALERT_EMAILS` and `CLINICAL_LEAD_EMAILS`; connect `NOTIFY_WEBHOOK_URL` to an email relay and send a test alert | IT | ☐ |
+| I12 | Schedule `POST /api/cron/alerts` **every minute** (deploy cron does this; other hosts must add it) | IT | ☐ |
+| I13 | If using SMS reminders, connect `SMS_WEBHOOK_URL`; confirm DLT registration and the neutral message text with legal | IT + DPO | ☐ |
 
 ## 🟡 Before opening to the pilot cohort
 
@@ -51,6 +56,8 @@ The software is built and tested. Launch is gated on the items below, which need
 | P4 | Run `pnpm check && pnpm test:e2e` against the release build | ☐ |
 | P5 | If using an LLM: run the red-team set (`tests/llm/redteam.ts`) against the real provider and review 50 real outputs with the clinical lead | ☐ |
 | P6 | Accessibility pass (screen reader, large text) in English and Hindi | ☐ |
+| P7 | Create counsellor profiles and at least one **priority slot**; verify it is hidden from a mild check-in and visible after an elevated one | ☐ |
+| P8 | Book with a real phone number and confirm the 24-hour and 2-hour reminders arrive; verify the text contains no app name or clinical detail | ☐ |
 
 ## Phase 6: Pilot (4 weeks, 50–100 volunteers)
 
