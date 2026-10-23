@@ -47,36 +47,36 @@ export function ContactForm({ checkinId, defaultOpen = true }: { checkinId?: str
 
   return (
     <Card>
-      <h2 className="font-semibold">{t.title}</h2>
-      <p className="text-sm text-muted">{t.body}</p>
+      <h2 className="font-serif text-[1.15rem] font-medium">{t.title}</h2>
+      <p className="text-sm leading-relaxed text-muted">{t.body}</p>
       {!open ? (
         <Button variant="secondary" onClick={() => setOpen(true)}>
           {t.title}
         </Button>
       ) : (
         <form onSubmit={onSubmit} className="flex flex-col gap-3" noValidate>
-          <label className="flex flex-col gap-1 text-sm">
+          <label className="flex flex-col gap-1.5 text-sm">
             {t.name}
             <input name="name" maxLength={60} autoComplete="off" className={inputClass} />
           </label>
-          <label className="flex flex-col gap-1 text-sm">
+          <label className="flex flex-col gap-1.5 text-sm">
             {t.phone}
             <input name="phone" type="tel" inputMode="tel" maxLength={20} className={inputClass} />
           </label>
-          <label className="flex flex-col gap-1 text-sm">
+          <label className="flex flex-col gap-1.5 text-sm">
             {t.email}
             <input name="email" type="email" maxLength={120} className={inputClass} />
           </label>
-          <label className="flex flex-col gap-1 text-sm">
+          <label className="flex flex-col gap-1.5 text-sm">
             {t.bestTime}
             <input name="bestTime" maxLength={80} className={inputClass} />
           </label>
-          <label className="flex items-start gap-3 text-sm">
-            <input name="consent" type="checkbox" className="mt-1 size-5 accent-[var(--accent)]" />
+          <label className="flex items-start gap-3 rounded-2xl border border-border/60 bg-surface/50 px-4 py-3 text-sm">
+            <input name="consent" type="checkbox" className="mt-0.5 size-5 accent-[var(--accent)]" />
             <span>{t.consent}</span>
           </label>
           {error && <Banner tone="urgent">{error}</Banner>}
-          <Button type="submit" disabled={status === "sending"}>
+          <Button type="submit" disabled={status === "sending"} className="w-full">
             {t.submit}
           </Button>
         </form>

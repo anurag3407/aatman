@@ -15,10 +15,10 @@ export default async function BookingDetailPage({ params }: PageProps<"/counsell
 
   return (
     <>
-      <Link href="/counsellor" className="text-sm text-muted underline">
+      <Link href="/counsellor" className="w-fit rounded-full text-sm text-muted underline decoration-border underline-offset-4 transition hover:text-foreground">
         ← Back
       </Link>
-      <h1 className="text-xl font-semibold">Booked session</h1>
+      <h1 className="font-serif text-[1.85rem] font-medium leading-tight tracking-[-0.015em]">Booked session</h1>
       <p>
         {formatDate(booking.slot.startsAt, "en", { dateStyle: "full", timeStyle: "short" })} IST · {booking.slot.location} ·{" "}
         {booking.slot.mode.replace("_", " ")}
@@ -31,8 +31,8 @@ export default async function BookingDetailPage({ params }: PageProps<"/counsell
           </a>
         </p>
       )}
-      <section className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-4">
-        <h2 className="font-semibold">Shared check-in</h2>
+      <section className="card-soft flex flex-col gap-3 rounded-[1.4rem] border border-border/75 bg-surface/75 p-4 sm:p-5">
+        <h2 className="font-serif text-[1.15rem] font-medium">Shared check-in</h2>
         {booking.checkin ? (
           <CheckinDetail checkin={booking.checkin} />
         ) : (

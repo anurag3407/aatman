@@ -19,7 +19,8 @@ import { fmt } from "@/lib/i18n";
 import { useI18n } from "@/lib/i18n/client";
 import { PHQ9_SAFETY_ITEM_INDEX } from "@/lib/scales";
 import { triage } from "@/lib/safety/triage";
-import { Banner, Button } from "@/components/ui";
+import { CompanionMark, CompanionNote } from "@/components/Companion";
+import { Banner, Button, Choice, SectionLabel, textareaClass } from "@/components/ui";
 
 function loadDraft(): FlowState {
   try {
@@ -103,42 +104,52 @@ export function CheckinFlow({ stateless }: { stateless: boolean }) {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between text-sm text-muted">
-          <span>{m.checkin.title}</span>
-          <span>{fmt(m.checkin.progress, { done, total })}</span>
+      <div className="flex flex-col gap-3">
+        <div className="flex items-end justify-between gap-3">
+          <SectionLabel>{m.checkin.title}</SectionLabel>
+          <span className="text-xs tabular-nums text-muted">{fmt(m.checkin.progress, { done, total })}</span>
         </div>
         <div
           role="progressbar"
           aria-valuemin={0}
           aria-valuemax={total}
           aria-valuenow={done}
-          className="h-2 overflow-hidden rounded-full bg-accent-soft"
+          className="h-[5px] overflow-hidden rounded-full bg-accent-soft/85"
         >
-          <div className="h-full rounded-full bg-accent transition-all" style={{ width: `${(done / total) * 100}%` }} />
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-accent/60 via-accent to-accent transition-[width] duration-700 ease-out"
+            style={{ width: `${(done / total) * 100}%` }}
+          />
         </div>
         {stateless && <p className="text-xs text-muted">{m.checkin.statelessBadge}</p>}
       </div>
 
       {safetyItemPositive(state) && <Banner tone="urgent">{m.checkin.inlineSupport}</Banner>}
 
-      {done === 0 && <p className="text-muted">{m.checkin.intro}</p>}
+      {done === 0 && (
+        <CompanionNote title={m.companion.checkin} body={m.companion.checkinSub} className="animate-rise" />
+      )}
+
+      {done === 0 && <p className="px-1 text-sm leading-relaxed text-muted">{m.checkin.intro}</p>}
 
       {step ? (
         <StepView key={step.id} step={step} headingRef={headingRef} onAnswer={respond} />
       ) : (
-        <div className="flex flex-col gap-3">
-          <h2 ref={headingRef} tabIndex={-1} className="text-xl font-semibold outline-none">
-            {m.checkin.submit}
-          </h2>
-          {error && <Banner tone="urgent">{error}</Banner>}
-          <Button onClick={submit} disabled={submitting}>
-            {submitting ? m.checkin.submitting : m.checkin.submit}
-          </Button>
+        <div className="animate-rise flex flex-col gap-4">
+          <CompanionNote title={m.companion.here} body={m.companion.hereSub} />
+          <div className="flex flex-col gap-3 px-1">
+            <h2 ref={headingRef} tabIndex={-1} className="font-serif text-[1.6rem] font-medium leading-snug outline-none">
+              {m.checkin.submit}
+            </h2>
+            {error && <Banner tone="urgent">{error}</Banner>}
+            <Button onClick={submit} disabled={submitting} className="w-full">
+              {submitting ? m.checkin.submitting : m.checkin.submit}
+            </Button>
+          </div>
         </div>
       )}
 
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2 px-1">
         <Button variant="ghost" onClick={() => setState(back)} disabled={state.order.length === 0 || submitting}>
           ← {m.common.back}
         </Button>
@@ -149,12 +160,18 @@ export function CheckinFlow({ stateless }: { stateless: boolean }) {
         )}
       </div>
 
-      <p className="text-xs text-muted">{m.checkin.draftNote}</p>
-      {state.order.length > 0 && (
-        <button type="button" className="self-start text-xs text-muted underline" onClick={() => setState(EMPTY_FLOW)}>
-          {m.checkin.restart}
-        </button>
-      )}
+      <div className="flex flex-col gap-2 px-1">
+        <p className="text-xs leading-relaxed text-muted">{m.checkin.draftNote}</p>
+        {state.order.length > 0 && (
+          <button
+            type="button"
+            className="self-start text-xs text-muted underline decoration-border underline-offset-4 transition hover:text-foreground"
+            onClick={() => setState(EMPTY_FLOW)}
+          >
+            {m.checkin.restart}
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -172,7 +189,11 @@ function StepView({
   const [text, setText] = useState("");
 
   const heading = (content: React.ReactNode) => (
-    <h2 ref={headingRef} tabIndex={-1} className="text-xl font-semibold leading-snug outline-none">
+    <h2
+      ref={headingRef}
+      tabIndex={-1}
+      className="font-serif text-[1.35rem] font-medium leading-snug tracking-[-0.01em] outline-none text-pretty sm:text-[1.45rem]"
+    >
       {content}
     </h2>
   );
@@ -180,16 +201,21 @@ function StepView({
   const options = (items: { label: string; value: StepValue }[]) => (
     <div className="flex flex-col gap-2" role="group">
       {items.map((o) => (
-        <Button key={String(o.value)} variant="secondary" className="justify-start text-left" onClick={() => onAnswer(o.value)}>
+        <Choice key={String(o.value)} onClick={() => onAnswer(o.value)}>
           {o.label}
-        </Button>
+        </Choice>
       ))}
     </div>
   );
 
   const bubble = (children: React.ReactNode) => (
-    <div className="flex flex-col gap-4 rounded-2xl rounded-tl-sm border border-border bg-surface p-5">
-      <span className="text-xs font-medium text-accent">{m.common.appName}</span>
+    <div className="animate-rise card-soft flex flex-col gap-4 rounded-[1.8rem] rounded-tl-lg border border-border/75 bg-surface/85 p-5 sm:p-6">
+      <div className="flex items-center gap-2">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent-soft/80">
+          <CompanionMark className="h-6 w-6" breathing={false} />
+        </span>
+        <span className="font-serif text-sm text-muted">{m.common.appName}</span>
+      </div>
       {children}
     </div>
   );
@@ -200,8 +226,8 @@ function StepView({
       const sensitive = step.scale === "phq9" && step.index === PHQ9_SAFETY_ITEM_INDEX;
       return bubble(
         <>
-          {sensitive && <p className="text-sm text-muted">{m.checkin.sensitiveIntro}</p>}
-          <p className="text-sm text-muted">{m.checkin.stem}</p>
+          {sensitive && <p className="text-sm leading-relaxed text-muted">{m.checkin.sensitiveIntro}</p>}
+          <p className="text-[0.72rem] uppercase tracking-[0.13em] text-muted">{m.checkin.stem}</p>
           {heading(item)}
           {options(m.checkin.likert.map((label, value) => ({ label, value })))}
         </>,
@@ -210,7 +236,7 @@ function StepView({
     case "yesno":
       return bubble(
         <>
-          {step.id === "cssrs.wish" && <p className="text-sm text-muted">{m.checkin.cssrsIntro}</p>}
+          {step.id === "cssrs.wish" && <p className="text-sm leading-relaxed text-muted">{m.checkin.cssrsIntro}</p>}
           {heading(m.checkin.cssrs[step.id])}
           {options([
             { label: m.common.yes, value: true },
@@ -244,7 +270,7 @@ function StepView({
       return bubble(
         <>
           {heading(m.checkin.deeper.title)}
-          <p className="text-muted">{m.checkin.deeper.body}</p>
+          <p className="text-sm leading-relaxed text-muted">{m.checkin.deeper.body}</p>
           {options([
             { label: m.checkin.deeper.yes, value: true },
             { label: m.checkin.deeper.no, value: false },
@@ -255,7 +281,7 @@ function StepView({
       return bubble(
         <>
           {heading(m.checkin.freeText.q)}
-          <p className="text-sm text-muted">{m.checkin.freeText.hint}</p>
+          <p className="text-sm leading-relaxed text-muted">{m.checkin.freeText.hint}</p>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -263,7 +289,7 @@ function StepView({
             maxLength={4000}
             placeholder={m.checkin.freeText.placeholder}
             aria-label={m.checkin.freeText.q}
-            className="w-full rounded-xl border border-border bg-background p-4 text-base focus-visible:outline-2 focus-visible:outline-accent"
+            className={textareaClass}
           />
           <Button onClick={() => onAnswer(text.trim() || null)}>{m.common.continue}</Button>
         </>,

@@ -1,31 +1,43 @@
 @import "tailwindcss";
 
-/* Calm, low-stimulation palette: warm neutrals with a sage accent. */
+/* Calm, low-stimulation palette: warm paper, moss ink, one candlelight glow. */
 :root {
-  --background: #f7f5f0;
-  --foreground: #2a2d29;
-  --muted: #6b6f68;
-  --surface: #ffffff;
-  --border: #e3dfd5;
-  --accent: #5b7b63;
-  --accent-foreground: #ffffff;
-  --accent-soft: #e4ece4;
-  --urgent: #a4483b;
-  --urgent-foreground: #ffffff;
+  --background: #f6f0e5;
+  --foreground: #2e342e;
+  --muted: #686c60;
+  --surface: #fffbf3;
+  --surface-2: #f0e8da;
+  --border: #e6dccb;
+  --accent: #4f6d58;
+  --accent-foreground: #fdfaf3;
+  --accent-soft: #e6eee2;
+  --urgent: #a34a3d;
+  --urgent-foreground: #fdf6f1;
+  --glow: #efc9a4;
+  --lilac: #8f84b9;
+  --sky: #aec9cd;
+  --halo: rgb(239 201 164 / 0.34);
+  --shadow-color: 46 51 43;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #171a17;
-    --foreground: #e8e6e0;
-    --muted: #a3a69f;
-    --surface: #212521;
-    --border: #343a34;
-    --accent: #8fb497;
-    --accent-foreground: #142017;
-    --accent-soft: #263129;
-    --urgent: #e08a7c;
+    --background: #151915;
+    --foreground: #ebe6da;
+    --muted: #a2a698;
+    --surface: #1d231d;
+    --surface-2: #232a23;
+    --border: #313a31;
+    --accent: #a9c5ad;
+    --accent-foreground: #16201a;
+    --accent-soft: #253229;
+    --urgent: #e6a094;
     --urgent-foreground: #2a0f0a;
+    --glow: #d9a97e;
+    --lilac: #a9a2c9;
+    --sky: #9fbfc4;
+    --halo: rgb(217 169 126 / 0.2);
+    --shadow-color: 0 0 0;
   }
 }
 
@@ -34,13 +46,18 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-border: var(--border);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-soft: var(--accent-soft);
   --color-urgent: var(--urgent);
   --color-urgent-foreground: var(--urgent-foreground);
+  --color-glow: var(--glow);
+  --color-lilac: var(--lilac);
+  --color-sky: var(--sky);
   --font-sans: var(--font-geist-sans), var(--font-devanagari), system-ui, sans-serif;
+  --font-serif: var(--font-fraunces), var(--font-serif-devanagari), Georgia, "Times New Roman", serif;
   --font-mono: var(--font-geist-mono);
   --animate-box-breath: box-breath 16s ease-in-out infinite;
 
@@ -57,15 +74,123 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  font-feature-settings: "ss01" 1, "cv01" 1;
+  text-rendering: optimizeLegibility;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .animate-box-breath {
-    animation: none;
+::selection {
+  background: var(--accent-soft);
+  color: var(--foreground);
+}
+
+/* Warm light that follows you through the app. Two soft sources and a low ground glow. */
+.app-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.app-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(56rem 40rem at 8% -12%, var(--halo), transparent 62%),
+    radial-gradient(50rem 34rem at 108% 4%, color-mix(in srgb, var(--lilac) 30%, transparent), transparent 66%),
+    radial-gradient(46rem 32rem at 42% 116%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 70%),
+    var(--background);
+}
+
+.app-shell::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+@media (prefers-color-scheme: dark) {
+  .app-shell::after {
+    opacity: 0.05;
   }
 }
 
-/* ---------- Landing page (bold, dark-only) ---------- */
+/* Cards with a low, diffused shadow rather than a hard edge. */
+.card-soft {
+  box-shadow:
+    0 1px 0 0 color-mix(in srgb, var(--surface) 70%, transparent) inset,
+    0 22px 48px -34px rgb(var(--shadow-color) / 0.55);
+}
+
+.glass {
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  backdrop-filter: blur(18px) saturate(1.06);
+  -webkit-backdrop-filter: blur(18px) saturate(1.06);
+}
+
+/* The companion's slow breath. */
+@keyframes companion-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.055); }
+}
+
+.companion-breathe {
+  animation: companion-breathe 7s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-rise {
+  animation: rise 0.65s cubic-bezier(0.22, 0.72, 0.28, 1) both;
+}
+
+.stagger > * {
+  animation: rise 0.6s cubic-bezier(0.22, 0.72, 0.28, 1) both;
+}
+.stagger > *:nth-child(2) { animation-delay: 0.05s; }
+.stagger > *:nth-child(3) { animation-delay: 0.1s; }
+.stagger > *:nth-child(4) { animation-delay: 0.15s; }
+.stagger > *:nth-child(5) { animation-delay: 0.2s; }
+.stagger > *:nth-child(6) { animation-delay: 0.25s; }
+.stagger > *:nth-child(7) { animation-delay: 0.3s; }
+.stagger > *:nth-child(8) { animation-delay: 0.35s; }
+
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, -8px, 0) scale(1.02); }
+}
+
+.drift {
+  animation: drift 12s ease-in-out infinite;
+}
+
+/* Breathing exercise: a warm orb of light rather than a flat circle. */
+.orb-core {
+  background:
+    radial-gradient(circle at 34% 26%, color-mix(in srgb, var(--glow) 72%, white), transparent 58%),
+    radial-gradient(circle at 70% 76%, color-mix(in srgb, var(--accent) 48%, transparent), transparent 66%),
+    color-mix(in srgb, var(--accent-soft) 84%, var(--surface));
+  box-shadow:
+    0 0 70px 12px var(--halo),
+    inset 0 0 44px rgb(255 255 255 / 0.28);
+}
+
+@media (prefers-color-scheme: dark) {
+  .orb-core {
+    box-shadow:
+      0 0 80px 10px var(--halo),
+      inset 0 0 36px rgb(255 255 255 / 0.08);
+  }
+}
+
+/* Landing page (bold, dark-only). Untouched by the app redesign. */
 @theme inline {
   --color-ink: #1a1a1a;
   --color-lime: #bdeb4a;
@@ -96,7 +221,12 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-spin-slow {
+  .animate-box-breath,
+  .animate-spin-slow,
+  .animate-rise,
+  .stagger > *,
+  .companion-breathe,
+  .drift {
     animation: none;
   }
 }

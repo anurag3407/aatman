@@ -3,7 +3,7 @@ import { formatDate } from "@/lib/i18n";
 import { listStaffSlots } from "@/lib/services/booking";
 import { cancelSlotAction, createSlotsAction } from "../../actions";
 
-const field = "min-h-11 rounded-lg border border-border bg-background px-3";
+const field = "min-h-11 rounded-xl border border-border/80 bg-surface/70 px-3";
 
 export default async function SlotsPage() {
   await requireStaffPage(["counsellor"]);
@@ -11,9 +11,9 @@ export default async function SlotsPage() {
 
   return (
     <>
-      <h1 className="text-xl font-semibold">Session slots</h1>
+      <h1 className="font-serif text-[1.85rem] font-medium leading-tight tracking-[-0.015em]">Session slots</h1>
 
-      <form action={createSlotsAction} className="grid gap-3 rounded-xl border border-border bg-surface p-4 sm:grid-cols-3">
+      <form action={createSlotsAction} className="card-soft grid gap-3 rounded-[1.4rem] border border-border/75 bg-surface/75 p-4 sm:grid-cols-3">
         <label className="flex flex-col gap-1 text-sm">
           First slot (IST)
           <input type="datetime-local" name="start" required className={field} />
@@ -42,7 +42,7 @@ export default async function SlotsPage() {
             <option value="video">Video</option>
           </select>
         </label>
-        <button type="submit" className="min-h-12 rounded-xl bg-accent px-5 font-medium text-accent-foreground sm:col-span-3">
+        <button type="submit" className="min-h-12 rounded-full bg-accent px-5 font-medium text-accent-foreground shadow-md shadow-accent/20 transition hover:brightness-105 sm:col-span-3">
           Create slots
         </button>
       </form>
@@ -65,7 +65,7 @@ export default async function SlotsPage() {
               <td className="text-right">
                 <form action={cancelSlotAction}>
                   <input type="hidden" name="id" value={s.id} />
-                  <button type="submit" className="rounded-lg px-3 py-1 text-urgent hover:bg-accent-soft">
+                  <button type="submit" className="rounded-full px-3 py-1 text-urgent transition hover:bg-accent-soft">
                     Cancel
                   </button>
                 </form>

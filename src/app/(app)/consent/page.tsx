@@ -20,12 +20,15 @@ export default async function ConsentPage() {
 
   return (
     <Page>
-      <PageTitle sub={m.consent.intro}>{m.consent.title}</PageTitle>
+      <PageTitle eyebrow={m.common.appName} sub={m.consent.intro}>{m.consent.title}</PageTitle>
       {previouslyConsented && <Banner>{m.consent.updated}</Banner>}
       <Card>
-        <ul className="flex list-disc flex-col gap-3 pl-5">
+        <ul className="flex flex-col gap-3.5">
           {m.consent.points.map((p) => (
-            <li key={p}>{p}</li>
+            <li key={p} className="flex gap-3 text-[0.92rem] leading-relaxed">
+              <span aria-hidden className="mt-[0.55rem] size-1.5 shrink-0 rounded-full bg-accent" />
+              <span>{p}</span>
+            </li>
           ))}
         </ul>
       </Card>

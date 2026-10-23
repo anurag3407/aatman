@@ -7,10 +7,13 @@ import { llmAvailable } from "@/lib/llm";
 export default async function ChatPage() {
   await requireStudentPage();
   const { m } = await getMessages();
+  const available = llmAvailable();
   return (
     <Page>
-      <PageTitle sub={m.chat.intro}>{m.chat.title}</PageTitle>
-      {llmAvailable() ? (
+      <PageTitle eyebrow={m.common.appName} sub={available ? undefined : m.chat.intro}>
+        {m.chat.title}
+      </PageTitle>
+      {available ? (
         <ChatView />
       ) : (
         <>

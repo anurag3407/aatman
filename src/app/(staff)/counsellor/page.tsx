@@ -15,8 +15,8 @@ export default async function CounsellorHome() {
   return (
     <>
       <section className="flex flex-col gap-3">
-        <h1 className="text-xl font-semibold">Contact requests</h1>
-        <p className="text-sm text-muted">
+        <h1 className="font-serif text-[1.85rem] font-medium leading-tight tracking-[-0.015em]">Contact requests</h1>
+        <p className="max-w-2xl text-sm leading-relaxed text-muted">
           Students who asked to be contacted. Most severe first. Opening a request is recorded in the audit log.
         </p>
         {requests.length === 0 ? (
@@ -27,7 +27,7 @@ export default async function CounsellorHome() {
               <li key={r.id}>
                 <Link
                   href={`/counsellor/requests/${r.id}`}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-border bg-surface px-4 py-3 hover:bg-accent-soft"
+                  className="card-soft flex items-center justify-between gap-3 rounded-[1.2rem] border border-border/75 bg-surface/75 px-4 py-3 transition duration-300 hover:border-accent/40 hover:bg-accent-soft/30"
                 >
                   <span className="flex items-center gap-3">
                     <span className={`rounded-full px-3 py-1 text-xs font-semibold ${TIER_BADGE[r.tier]}`}>{TIER_LABELS[r.tier]}</span>
@@ -42,7 +42,7 @@ export default async function CounsellorHome() {
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-xl font-semibold">Upcoming booked sessions</h2>
+        <h2 className="font-serif text-[1.3rem] font-medium">Upcoming booked sessions</h2>
         {booked.length === 0 ? (
           <p className="text-muted">No booked sessions.</p>
         ) : (
@@ -51,7 +51,7 @@ export default async function CounsellorHome() {
               <li key={s.id}>
                 <Link
                   href={`/counsellor/bookings/${s.id}`}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-border bg-surface px-4 py-3 hover:bg-accent-soft"
+                  className="card-soft flex items-center justify-between gap-3 rounded-[1.2rem] border border-border/75 bg-surface/75 px-4 py-3 transition duration-300 hover:border-accent/40 hover:bg-accent-soft/30"
                 >
                   <span>
                     {when(s.startsAt)} · {s.location}

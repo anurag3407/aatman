@@ -12,9 +12,9 @@ export default async function AdminDashboard() {
 
   return (
     <>
-      <header className="flex flex-col gap-1">
-        <h1 className="text-xl font-semibold">Wellbeing overview</h1>
-        <p className="text-sm text-muted">
+      <header className="flex flex-col gap-1.5">
+        <h1 className="font-serif text-[1.85rem] font-medium leading-tight tracking-[-0.015em]">Wellbeing overview</h1>
+        <p className="text-sm leading-relaxed text-muted">
           Totals only. Any count below {K_MIN} is hidden (and one more cell, so it can&apos;t be worked out from the total).
         </p>
       </header>
@@ -30,7 +30,7 @@ export default async function AdminDashboard() {
       </section>
 
       <section className="flex flex-col gap-2">
-        <h2 className="font-semibold">Check-ins by week</h2>
+        <h2 className="font-serif text-[1.2rem] font-medium">Check-ins by week</h2>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[560px] text-left text-sm">
             <thead className="text-muted">
@@ -65,9 +65,9 @@ export default async function AdminDashboard() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-border bg-surface p-4">
+    <div className="card-soft rounded-[1.4rem] border border-border/75 bg-surface/75 p-4">
       <p className="text-xs text-muted">{label}</p>
-      <p className="text-2xl font-semibold">{value}</p>
+      <p className="mt-1 font-serif text-2xl font-medium">{value}</p>
     </div>
   );
 }

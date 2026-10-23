@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n/client";
 import { ANTI_RAGGING } from "@/lib/safety/helplines";
 import { detectCrisis } from "@/lib/safety/crisisDetector";
+import { CompanionMark } from "./Companion";
 import { CrisisActions } from "./CrisisActions";
-import { Banner, Button, Card } from "./ui";
+import { Banner, Card } from "./ui";
+import { IconArrowUp } from "./icons";
 
 interface Turn {
   role: "user" | "assistant";
@@ -65,29 +67,60 @@ export function ChatView() {
 
   return (
     <div className="flex flex-col gap-4">
-      <Banner>
-        {m.chat.noNames} {m.chat.notSaved}
-      </Banner>
+      <p className="flex items-start gap-2 px-1 text-xs leading-relaxed text-muted">
+        <CompanionMark className="mt-0.5 h-5 w-5 shrink-0 opacity-80" breathing={false} />
+        <span>
+          {m.chat.noNames} {m.chat.notSaved}
+        </span>
+      </p>
+
+      {turns.length === 0 && !paused && (
+        <div className="animate-rise flex flex-col items-center gap-4 rounded-[1.8rem] border border-border/60 bg-surface/45 px-6 py-10 text-center">
+          <CompanionMark className="h-20 w-20" />
+          <p className="max-w-xs font-serif text-[1.35rem] leading-snug text-pretty">{m.companion.here}</p>
+          <p className="max-w-xs text-sm leading-relaxed text-muted">{m.chat.intro}</p>
+        </div>
+      )}
 
       <ol className="flex flex-col gap-3" aria-live="polite">
         {turns.map((t, i) => (
-          <li
-            key={i}
-            className={`max-w-[85%] rounded-2xl px-4 py-3 ${
-              t.role === "user" ? "self-end rounded-br-sm bg-accent text-accent-foreground" : "self-start rounded-bl-sm border border-border bg-surface"
-            }`}
-          >
-            <span className="sr-only">{t.role === "user" ? m.chat.you : m.chat.companion}: </span>
-            {t.content}
+          <li key={i} className={`flex items-end gap-2 ${t.role === "user" ? "justify-end" : "justify-start"}`}>
+            {t.role === "assistant" && (
+              <span className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-soft/70">
+                <CompanionMark className="h-6 w-6" breathing={false} />
+              </span>
+            )}
+            <div
+              className={`max-w-[82%] px-4 py-3 text-[0.95rem] leading-relaxed ${
+                t.role === "user"
+                  ? "rounded-[1.4rem] rounded-br-md bg-accent text-accent-foreground"
+                  : "rounded-[1.4rem] rounded-bl-md border border-border/70 bg-surface/80"
+              }`}
+            >
+              <span className="sr-only">{t.role === "user" ? m.chat.you : m.chat.companion}: </span>
+              {t.content}
+            </div>
           </li>
         ))}
-        {sending && <li className="self-start text-muted">…</li>}
+        {sending && (
+          <li className="flex items-end gap-2">
+            <span className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-soft/70">
+              <CompanionMark className="h-6 w-6" breathing={false} />
+            </span>
+            <span className="flex gap-1 rounded-[1.4rem] rounded-bl-md border border-border/70 bg-surface/80 px-4 py-3.5">
+              <span className="size-1.5 animate-pulse rounded-full bg-muted" />
+              <span className="size-1.5 animate-pulse rounded-full bg-muted [animation-delay:180ms]" />
+              <span className="size-1.5 animate-pulse rounded-full bg-muted [animation-delay:360ms]" />
+              <span className="sr-only">{m.chat.companion}</span>
+            </span>
+          </li>
+        )}
       </ol>
 
       {paused === "safety" && (
         <>
-          <Card>
-            <h2 className="font-semibold">{m.chat.pausedTitle}</h2>
+          <Card className="border-urgent/30">
+            <h2 className="font-serif text-xl font-medium">{m.chat.pausedTitle}</h2>
             <p className="text-muted">{m.chat.pausedBody}</p>
           </Card>
           <CrisisActions m={m} tone="urgent" />
@@ -95,7 +128,7 @@ export function ChatView() {
       )}
       {paused === "ragging" && (
         <Card>
-          <h2 className="font-semibold">{m.chat.pausedTitle}</h2>
+          <h2 className="font-serif text-xl font-medium">{m.chat.pausedTitle}</h2>
           <p className="text-muted">{m.chat.raggingBody}</p>
           <a href={`tel:${ANTI_RAGGING.tel}`} className="font-semibold text-accent underline underline-offset-4">
             {ANTI_RAGGING.name[locale]} · {ANTI_RAGGING.number}
@@ -105,25 +138,32 @@ export function ChatView() {
       {paused === "limit" && <Banner>{m.chat.limit}</Banner>}
 
       {!paused && (
-        <form onSubmit={send} className="flex flex-col gap-2">
-          <textarea
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                e.currentTarget.form?.requestSubmit();
-              }
-            }}
-            rows={3}
-            maxLength={2000}
-            placeholder={m.chat.placeholder}
-            aria-label={m.chat.placeholder}
-            className="w-full rounded-xl border border-border bg-surface p-4 text-base focus-visible:outline-2 focus-visible:outline-accent"
-          />
-          <Button type="submit" disabled={sending || !draft.trim()}>
-            {m.chat.send}
-          </Button>
+        <form onSubmit={send} className="sticky bottom-24 z-10">
+          <div className="glass card-soft flex items-end gap-2 rounded-[1.6rem] border border-border/70 p-2">
+            <textarea
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  e.currentTarget.form?.requestSubmit();
+                }
+              }}
+              rows={2}
+              maxLength={2000}
+              placeholder={m.chat.placeholder}
+              aria-label={m.chat.placeholder}
+              className="min-h-12 w-full resize-none rounded-[1.2rem] border-0 bg-transparent px-3 py-2.5 text-base leading-relaxed text-foreground placeholder:text-muted/80 focus-visible:outline-none"
+            />
+            <button
+              type="submit"
+              aria-label={m.chat.send}
+              disabled={sending || !draft.trim()}
+              className="mb-0.5 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-md shadow-accent/25 transition duration-300 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-40 disabled:shadow-none"
+            >
+              <IconArrowUp className="h-5 w-5" />
+            </button>
+          </div>
         </form>
       )}
       <div ref={endRef} />

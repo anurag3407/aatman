@@ -29,15 +29,15 @@ export function EraseForm() {
   if (state === "done") return <Banner>{m.settings.erased}</Banner>;
 
   return (
-    <Card className="border-urgent">
-      <h2 className="font-semibold">{m.settings.eraseTitle}</h2>
-      <p className="text-sm text-muted">{m.settings.eraseBody}</p>
-      <label className="flex flex-col gap-1 text-sm">
+    <Card className="border-urgent/35">
+      <h2 className="font-serif text-[1.15rem] font-medium">{m.settings.eraseTitle}</h2>
+      <p className="text-sm leading-relaxed text-muted">{m.settings.eraseBody}</p>
+      <label className="flex flex-col gap-1.5 text-sm">
         {m.settings.eraseConfirm}
         <input value={typed} onChange={(e) => setTyped(e.target.value)} autoComplete="off" className={inputClass} />
       </label>
       {state === "error" && <Banner tone="urgent">{m.common.genericError}</Banner>}
-      <Button variant="urgent" disabled={typed.trim() !== CONFIRM_WORD || state === "busy"} onClick={erase}>
+      <Button variant="urgent" disabled={typed.trim() !== CONFIRM_WORD || state === "busy"} onClick={erase} className="w-full">
         {m.settings.eraseCta}
       </Button>
     </Card>

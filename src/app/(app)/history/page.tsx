@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { CompanionMark } from "@/components/Companion";
 import { HistoryChart } from "@/components/HistoryChart";
+import { IconCheckin } from "@/components/icons";
 import { KeepToggle } from "@/components/KeepToggle";
 import { Card, LinkButton, Page, PageTitle } from "@/components/ui";
 import { requireStudentPage } from "@/lib/auth/guards";
@@ -20,30 +22,47 @@ export default async function HistoryPage() {
 
   return (
     <Page>
-      <PageTitle sub={fmt(m.history.retention, { months: env().RETENTION_MONTHS })}>{m.history.title}</PageTitle>
+      <PageTitle eyebrow={m.common.appName} sub={fmt(m.history.retention, { months: env().RETENTION_MONTHS })}>
+        {m.history.title}
+      </PageTitle>
 
       {checkins.length === 0 ? (
-        <>
-          <p className="text-muted">{m.history.empty}</p>
+        <div className="animate-rise flex flex-col items-center gap-4 rounded-[1.9rem] border border-border/70 bg-surface/55 px-6 py-12 text-center">
+          <CompanionMark className="h-20 w-20" />
+          <p className="font-serif text-[1.3rem] leading-snug">{m.history.empty}</p>
+          <p className="max-w-xs text-sm leading-relaxed text-muted">{m.companion.checkin}</p>
           <LinkButton href="/checkin">{m.home.start}</LinkButton>
-        </>
+        </div>
       ) : (
         <>
-          <Card>
-            <h2 className="font-semibold">{m.history.chartTitle}</h2>
+          <Card className="animate-rise">
+            <h2 className="font-serif text-[1.15rem] font-medium">{m.history.chartTitle}</h2>
             <HistoryChart points={points} locale={locale} labels={{ mood: m.results.scale.phq9, worry: m.results.scale.gad7 }} />
-            <p className="text-xs text-muted">{m.history.chartNote}</p>
+            <p className="text-xs leading-relaxed text-muted">{m.history.chartNote}</p>
           </Card>
-          <ul className="flex flex-col gap-2">
+          <ul className="stagger flex flex-col gap-2">
             {checkins.map((c) => (
-              <li key={c.id} className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-surface px-5 py-3">
-                <span className="flex flex-col">
-                  <span className="font-medium">{formatDate(c.createdAt, locale, { dateStyle: "medium" })}</span>
-                  <span className="text-sm text-muted">{m.history.tier[c.triage.tier]}</span>
-                </span>
-                <span className="flex items-center gap-1">
+              <li
+                key={c.id}
+                className="card-soft flex items-center justify-between gap-3 rounded-[1.4rem] border border-border/75 bg-surface/75 px-4 py-3.5"
+              >
+                <div className="flex min-w-0 items-center gap-3">
+                  <span aria-hidden className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-soft/75 text-accent">
+                    <IconCheckin className="h-5 w-5" />
+                  </span>
+                  <span className="flex min-w-0 flex-col gap-0.5">
+                    <span className="truncate font-serif text-[1.02rem] leading-snug">
+                      {formatDate(c.createdAt, locale, { dateStyle: "medium" })}
+                    </span>
+                    <span className="text-xs text-muted">{m.history.tier[c.triage.tier]}</span>
+                  </span>
+                </div>
+                <span className="flex shrink-0 items-center gap-1">
                   <KeepToggle id={c.id} initial={c.keep} />
-                  <Link href={`/results/${c.id}`} className="rounded-lg px-3 py-2 text-sm font-medium text-accent hover:bg-accent-soft">
+                  <Link
+                    href={`/results/${c.id}`}
+                    className="rounded-full px-3 py-2 text-sm font-medium text-accent transition duration-300 hover:bg-accent-soft/60"
+                  >
                     {m.history.view}
                   </Link>
                 </span>

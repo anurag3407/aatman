@@ -20,7 +20,7 @@ export function CheckinDetail({ checkin }: { checkin: CheckinRecord }) {
       </div>
 
       {triage.reasons.length > 0 && (
-        <ul className="list-disc pl-5 text-sm">
+        <ul className="flex list-disc flex-col gap-1 pl-5 text-sm leading-relaxed">
           {triage.reasons.map((r) => (
             <li key={r}>{REASON_LABELS[r]}</li>
           ))}
@@ -35,8 +35,8 @@ export function CheckinDetail({ checkin }: { checkin: CheckinRecord }) {
       </dl>
 
       {cssrs && (
-        <section className="rounded-xl border border-urgent p-4 text-sm">
-          <h3 className="mb-2 font-semibold">C-SSRS screener (past month) · risk: {s.cssrs ?? "n/a"}</h3>
+        <section className="rounded-[1.2rem] border border-urgent/40 bg-urgent/5 p-4 text-sm">
+          <h3 className="mb-2 font-serif text-[1.05rem] font-medium">C-SSRS screener (past month) · risk: {s.cssrs ?? "n/a"}</h3>
           <ul className="flex flex-col gap-1">
             <li>Wish to be dead: {yn(cssrs.wishToBeDead)}</li>
             <li>Active suicidal thoughts: {yn(cssrs.activeThoughts)}</li>
@@ -53,7 +53,7 @@ export function CheckinDetail({ checkin }: { checkin: CheckinRecord }) {
       )}
 
       <details className="text-sm">
-        <summary className="cursor-pointer font-medium">Item-level answers</summary>
+        <summary className="cursor-pointer font-medium text-muted transition hover:text-foreground">Item-level answers</summary>
         <ol className="mt-2 flex list-decimal flex-col gap-1 pl-5">
           {answers.phq9.map((v, i) => (
             <li key={`p${i}`}>
@@ -82,9 +82,9 @@ export function CheckinDetail({ checkin }: { checkin: CheckinRecord }) {
 
 function Score({ label, value, max, extra }: { label: string; value: number | null; max: number; extra?: string }) {
   return (
-    <div className="rounded-xl border border-border p-3">
+    <div className="rounded-[1rem] border border-border/70 bg-background/30 p-3">
       <dt className="text-muted">{label}</dt>
-      <dd className="text-lg font-semibold">
+      <dd className="font-serif text-lg font-medium">
         {value === null ? "–" : `${value}/${max}`} {extra && <span className="text-xs font-normal text-muted">{extra}</span>}
       </dd>
     </div>

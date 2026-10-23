@@ -37,6 +37,17 @@ const en = {
     privacyNotice: "Privacy notice",
   },
 
+  companion: {
+    here: "I'm right here with you.",
+    hereSub: "Take your time. You can pause, skip, or leave whenever you need.",
+    checkin: "Whenever you're ready.",
+    checkinSub: "There are no right answers here — only yours.",
+    slow: "Let's take this slowly.",
+    slowSub: "A few quiet minutes is enough.",
+    results: "Thank you for showing up for yourself.",
+    resultsSub: "However this felt, you made a little room for yourself today.",
+  },
+
   home: {
     title: "A quiet space to check in with yourself",
     body: "Two minutes, a few honest answers, and support that fits where you are. Made for NIT Patna students.",

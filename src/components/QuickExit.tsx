@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { IconExit } from "./icons";
 
 const NEUTRAL_URL = "https://www.google.com/search?q=weather";
 
@@ -34,9 +35,10 @@ export function QuickExit({ label, hint }: { label: string; hint: string }) {
       onClick={quickExit}
       aria-label={hint}
       title={hint}
-      className="min-h-10 rounded-lg border border-border bg-surface px-3 text-sm font-medium focus-visible:outline-2 focus-visible:outline-accent"
+      className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-full px-2.5 text-[0.8rem] font-medium text-muted transition duration-300 hover:bg-surface/80 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
     >
-      {label}
+      <IconExit className="h-[1.05rem] w-[1.05rem]" />
+      <span className="hidden md:inline">{label}</span>
     </button>
   );
 }

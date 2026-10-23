@@ -5,6 +5,7 @@ import { useState } from "react";
 import { formatDate } from "@/lib/i18n";
 import { useI18n } from "@/lib/i18n/client";
 import { ICALL, TELE_MANAS } from "@/lib/safety/helplines";
+import { CompanionMark } from "./Companion";
 import { Banner, Button, Card, inputClass } from "./ui";
 
 interface Slot {
@@ -65,19 +66,19 @@ export function BookingView({ open, mine, hasCheckin }: { open: Slot[]; mine: Sl
       {message && <Banner tone={message.tone}>{message.text}</Banner>}
 
       {mine.length > 0 && (
-        <Card>
-          <h2 className="font-semibold">{m.book.yourBookings}</h2>
-          <ul className="flex flex-col gap-3">
+        <Card className="animate-rise">
+          <h2 className="font-serif text-[1.15rem] font-medium">{m.book.yourBookings}</h2>
+          <ul className="flex flex-col divide-y divide-border/60">
             {mine.map((s) => (
-              <li key={s.id} className="flex flex-col gap-2 border-t border-border pt-3 first:border-0 first:pt-0">
-                <span className="font-medium">{when(s.startsAt)}</span>
-                <span className="text-sm text-muted">
+              <li key={s.id} className="flex flex-col gap-1.5 py-3 first:pt-1 last:pb-0">
+                <span className="font-serif text-[1.05rem] leading-snug">{when(s.startsAt)}</span>
+                <span className="text-xs text-muted">
                   {m.book.mode[s.mode]} · {s.location}
                 </span>
                 {s.status === "cancelled" ? (
                   <span className="text-sm text-urgent">{m.book.cancelled}</span>
                 ) : (
-                  <Button variant="ghost" className="self-start" disabled={busy} onClick={() => cancel(s.id)}>
+                  <Button variant="ghost" className="min-h-9 self-start px-3 text-sm" disabled={busy} onClick={() => cancel(s.id)}>
                     {m.book.cancelBooking}
                   </Button>
                 )}
@@ -88,48 +89,60 @@ export function BookingView({ open, mine, hasCheckin }: { open: Slot[]; mine: Sl
       )}
 
       {open.length === 0 ? (
-        <Card>
-          <p>{m.book.none}</p>
-          {[TELE_MANAS, ICALL].map((h) => (
-            <a key={h.id} href={`tel:${h.tel}`} className="flex justify-between gap-4 rounded-xl border border-border px-4 py-3">
-              <span>
-                <span className="block font-medium">{h.name[locale]}</span>
-                <span className="text-sm text-muted">{h.hours[locale]}</span>
-              </span>
-              <span className="font-semibold text-accent">{h.number}</span>
-            </a>
-          ))}
+        <Card className="animate-rise">
+          <div className="flex items-start gap-3">
+            <CompanionMark className="h-10 w-10 shrink-0" />
+            <p className="pt-1.5 text-sm leading-relaxed">{m.book.none}</p>
+          </div>
+          <div className="mt-1 flex flex-col gap-2">
+            {[TELE_MANAS, ICALL].map((h) => (
+              <a
+                key={h.id}
+                href={`tel:${h.tel}`}
+                className="flex items-center justify-between gap-4 rounded-2xl border border-border/70 bg-surface/60 px-4 py-3 transition duration-300 hover:border-accent/40 hover:bg-accent-soft/30"
+              >
+                <span>
+                  <span className="block font-medium">{h.name[locale]}</span>
+                  <span className="text-xs text-muted">{h.hours[locale]}</span>
+                </span>
+                <span className="shrink-0 font-semibold text-accent">{h.number}</span>
+              </a>
+            ))}
+          </div>
         </Card>
       ) : selected ? (
-        <Card>
-          <h2 className="font-semibold">{m.book.confirmTitle}</h2>
-          <p>
-            {when(selected.startsAt)} · {m.book.mode[selected.mode]} · {selected.location}
-          </p>
+        <Card className="animate-rise">
+          <h2 className="font-serif text-[1.2rem] font-medium">{m.book.confirmTitle}</h2>
+          <div className="rounded-2xl bg-accent-soft/50 px-4 py-3">
+            <p className="font-serif text-[1.02rem] leading-snug">{when(selected.startsAt)}</p>
+            <p className="mt-0.5 text-xs text-muted">
+              {m.book.mode[selected.mode]} · {selected.location}
+            </p>
+          </div>
           <form onSubmit={confirm} className="flex flex-col gap-3">
             {hasCheckin && (
-              <label className="flex items-start gap-3 text-sm">
-                <input name="share" type="checkbox" className="mt-1 size-5" />
+              <label className="flex items-start gap-3 rounded-2xl border border-border/60 bg-surface/50 px-4 py-3 text-sm">
+                <input name="share" type="checkbox" className="mt-0.5 size-5 accent-[var(--accent)]" />
                 <span>
                   {m.book.share}
-                  <span className="block text-muted">{m.book.shareHint}</span>
+                  <span className="mt-0.5 block text-xs leading-relaxed text-muted">{m.book.shareHint}</span>
                 </span>
               </label>
             )}
-            <label className="flex flex-col gap-1 text-sm">
+            <label className="flex flex-col gap-1.5 text-sm">
               {m.book.phone}
               <input name="phone" type="tel" inputMode="tel" maxLength={20} className={inputClass} />
             </label>
-            <Button type="submit" disabled={busy}>
+            <Button type="submit" disabled={busy} className="w-full">
               {m.book.confirm}
             </Button>
-            <Button type="button" variant="ghost" onClick={() => setSelected(null)}>
+            <Button type="button" variant="ghost" className="w-full" onClick={() => setSelected(null)}>
               {m.common.cancel}
             </Button>
           </form>
         </Card>
       ) : (
-        <ul className="flex flex-col gap-2">
+        <ul className="stagger flex flex-col gap-2">
           {open.map((s) => (
             <li key={s.id}>
               <button
@@ -138,15 +151,17 @@ export function BookingView({ open, mine, hasCheckin }: { open: Slot[]; mine: Sl
                   setSelected(s);
                   setMessage(null);
                 }}
-                className="flex min-h-14 w-full items-center justify-between gap-4 rounded-2xl border border-border bg-surface px-5 py-3 text-left hover:bg-accent-soft"
+                className="card-soft group flex min-h-16 w-full items-center justify-between gap-4 rounded-[1.4rem] border border-border/75 bg-surface/75 px-5 py-4 text-left transition duration-300 hover:border-accent/40 hover:bg-accent-soft/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
-                <span>
-                  <span className="block font-medium">{when(s.startsAt)}</span>
-                  <span className="text-sm text-muted">
+                <span className="flex min-w-0 flex-col gap-1">
+                  <span className="font-serif text-[1.05rem] leading-snug">{when(s.startsAt)}</span>
+                  <span className="text-xs text-muted">
                     {m.book.mode[s.mode]} · {s.location}
                   </span>
                 </span>
-                <span className="font-semibold text-accent">{m.book.book}</span>
+                <span className="shrink-0 rounded-full bg-accent-soft px-3 py-1.5 text-xs font-semibold text-accent">
+                  {m.book.book}
+                </span>
               </button>
             </li>
           ))}

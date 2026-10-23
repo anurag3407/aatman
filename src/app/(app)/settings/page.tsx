@@ -8,15 +8,15 @@ export default async function SettingsPage() {
   const { m } = await getMessages();
   return (
     <Page>
-      <PageTitle>{m.settings.title}</PageTitle>
+      <PageTitle eyebrow={m.common.appName}>{m.settings.title}</PageTitle>
 
       <Card>
-        <h2 className="font-semibold">{m.settings.exportTitle}</h2>
-        <p className="text-sm text-muted">{m.settings.exportBody}</p>
+        <h2 className="font-serif text-[1.15rem] font-medium">{m.settings.exportTitle}</h2>
+        <p className="text-sm leading-relaxed text-muted">{m.settings.exportBody}</p>
         <a
           href="/api/me/export"
           download
-          className="inline-flex min-h-12 items-center justify-center rounded-xl border border-border px-5 font-medium hover:bg-accent-soft"
+          className="inline-flex min-h-12 w-full items-center justify-center rounded-full border border-border bg-surface/75 px-5 font-medium transition duration-300 hover:border-accent/45 hover:bg-accent-soft/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           {m.settings.exportCta}
         </a>
@@ -24,7 +24,7 @@ export default async function SettingsPage() {
 
       <EraseForm />
 
-      <form method="post" action="/api/auth/logout">
+      <form method="post" action="/api/auth/logout" className="pt-1">
         <Button type="submit" variant="ghost" className="w-full">
           {m.common.signOut}
         </Button>

@@ -23,11 +23,11 @@ export default async function BookPage() {
 
   return (
     <Page>
-      <PageTitle sub={m.book.body}>{m.book.title}</PageTitle>
+      <PageTitle eyebrow={m.common.appName} sub={m.book.body}>{m.book.title}</PageTitle>
       <BookingView open={open.map(serialize)} mine={mine.map(serialize)} hasCheckin={latest !== null} />
       {latest && (
         <>
-          <h2 className="font-semibold">{m.book.contactInstead}</h2>
+          <h2 className="pt-1 font-serif text-[1.3rem] font-medium">{m.book.contactInstead}</h2>
           <ContactForm checkinId={latest.id} defaultOpen={false} />
         </>
       )}

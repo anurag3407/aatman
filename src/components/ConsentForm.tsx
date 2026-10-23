@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n/client";
-import { Button, Card, LinkButton } from "./ui";
+import { Button, Card, Choice, LinkButton } from "./ui";
 
 /** Age first: under-18s get the no-account mode (DPDP requires parental consent to process their data). */
 export function ConsentForm({ signedIn }: { signedIn: boolean }) {
@@ -12,24 +12,20 @@ export function ConsentForm({ signedIn }: { signedIn: boolean }) {
   if (age === null) {
     return (
       <fieldset className="flex flex-col gap-3">
-        <legend className="mb-2 font-semibold">{m.consent.ageQuestion}</legend>
-        <Button variant="secondary" onClick={() => setAge("adult")}>
-          {m.consent.adult}
-        </Button>
-        <Button variant="secondary" onClick={() => setAge("minor")}>
-          {m.consent.minor}
-        </Button>
+        <legend className="mb-2 font-serif text-[1.25rem] font-medium">{m.consent.ageQuestion}</legend>
+        <Choice onClick={() => setAge("adult")}>{m.consent.adult}</Choice>
+        <Choice onClick={() => setAge("minor")}>{m.consent.minor}</Choice>
       </fieldset>
     );
   }
 
   if (age === "minor") {
     return (
-      <Card>
-        <h2 className="font-semibold">{m.consent.minorTitle}</h2>
+      <Card className="animate-rise">
+        <h2 className="font-serif text-[1.2rem] font-medium">{m.consent.minorTitle}</h2>
         <p className="text-muted">{m.consent.minorBody}</p>
         <LinkButton href="/checkin?mode=stateless">{m.consent.minorStart}</LinkButton>
-        <Button variant="ghost" onClick={() => setAge(null)}>
+        <Button variant="ghost" className="self-start" onClick={() => setAge(null)}>
           {m.common.back}
         </Button>
       </Card>
@@ -37,8 +33,10 @@ export function ConsentForm({ signedIn }: { signedIn: boolean }) {
   }
 
   return (
-    <form method="post" action="/api/consent" className="flex flex-col gap-3">
-      <Button type="submit">{m.consent.agree}</Button>
+    <form method="post" action="/api/consent" className="animate-rise flex flex-col gap-3">
+      <Button type="submit" className="w-full">
+        {m.consent.agree}
+      </Button>
     </form>
   );
 }
