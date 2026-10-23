@@ -57,7 +57,7 @@ test("reflective chat: replies, blocks unsafe model output, and pauses on crisis
 test("Hindi: the language switch translates the app and the check-in", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Language" }).click();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("खुद से हाल-चाल पूछने की एक शांत जगह");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("आपकी बात सुनी जाएगी आप अकेले नहीं हैं");
   await expect(page.locator("div[lang=hi]").first()).toBeVisible();
   await page.goto("/checkin?mode=stateless");
   await expect(page.getByRole("button", { name: "बिल्कुल नहीं" })).toBeVisible();
